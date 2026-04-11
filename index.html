@@ -119,7 +119,7 @@
     .nav-tab.active .tab-badge { background: var(--red-tint); color: var(--red); }
 
     /* ── LAYOUT ── */
-    main { max-width: 1080px; margin: 0 auto; padding: 32px 20px 80px; }
+    main { max-width: 1080px; margin: 0 auto; padding: 32px 20px 100px; }
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
 
@@ -381,12 +381,12 @@
   </section>
 </main>
 
-<footer style="border-top:1px solid var(--border);background:var(--surface);padding:20px 32px;margin-top:40px">
-  <div style="max-width:1080px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
-    <p style="font-size:0.72rem;color:var(--text-3);line-height:1.6;max-width:680px">
-      This survey was designed and conducted independently by parents in the South Portland community. It has no official connection to the South Portland School Department and does not represent the views or positions of the district.
+<footer style="position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);padding:6px 20px;z-index:300">
+  <div style="max-width:1080px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+    <p style="font-size:0.62rem;color:var(--text-3);line-height:1.5">
+      Independent community initiative. Not conducted by or affiliated with the South Portland School Department.
     </p>
-    <a href="mailto:sopoparents@gmail.com" style="font-size:0.72rem;font-weight:600;color:var(--red);white-space:nowrap;text-decoration:none">sopoparents@gmail.com</a>
+    <a href="mailto:sopoparents@gmail.com" style="font-size:0.62rem;font-weight:600;color:var(--red);white-space:nowrap;text-decoration:none">sopoparents@gmail.com</a>
   </div>
 </footer>
 
