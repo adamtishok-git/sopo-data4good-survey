@@ -449,7 +449,7 @@
     <button class="nav-tab active" data-tab="overview">Overview</button>
     <button class="nav-tab" data-tab="parents">Parents &amp; Families <span class="tab-badge" id="cnt-parent">—</span></button>
     <button class="nav-tab" data-tab="educators">Educators &amp; Staff <span class="tab-badge" id="cnt-educator">—</span></button>
-    <button class="nav-tab" data-tab="community">Community <span class="tab-badge" id="cnt-community">—</span></button>
+    <button class="nav-tab" data-tab="community">Community</button>
     <button class="nav-tab" data-tab="voices">Voices</button>
   </div>
 </nav>
@@ -1182,7 +1182,7 @@ function renderCommunity(rows){
 
   const intro=document.createElement("p");
   intro.style.cssText="font-size:0.8rem;color:var(--text-2);line-height:1.6;margin-bottom:28px;max-width:640px";
-  intro.textContent="Responses from any South Portland community member. The questions in this section were answered by all survey respondents.";
+  intro.textContent="These questions were answered by all survey respondents — parents, educators, and community members alike.";
   el.appendChild(intro);
 
   // Sentiment
@@ -1203,17 +1203,6 @@ function renderCommunity(rows){
     "Respondents could select up to 3",
     rows,["most important information you still need","important information you still need"],"multi",12));
 
-  // What district must get right (ranked open-text won't work, but a ranked chart might)
-  append(el, mkHead("Transition Priorities","What matters most to community members in this process"));
-  const tc=document.createElement("div"); tc.className="two-col"; el.appendChild(tc);
-  const tl=document.createElement("div"); const tr=document.createElement("div");
-  tc.appendChild(tl); tc.appendChild(tr);
-  append(tl, mkRanked("Factors that matter most in school assignment decisions",
-    "Respondents could select up to 3",
-    rows,["three factors matter most to your family in how your child"],"multi",8));
-  append(tr, mkRanked("What success looks like for this transition",
-    "Respondents could select up to 3",
-    rows,["three outcomes matter most to you as measures of whether"],"multi",8));
 }
 
 // ─── RENDER VOICES ────────────────────────────────────────────────────────────
@@ -1315,10 +1304,9 @@ function refreshTab(tabId){
   if (tabId==="overview"){ renderOverview(filtered); return; }
   if (tabId==="voices")  { renderVoices(filtered);   return; }
   if (tabId==="community"){
-    const rows=communityMembers(filtered);
     const rc=document.getElementById("rc-community");
-    rc.innerHTML=`${rows.length} community response${rows.length!==1?"s":""}`;
-    renderCommunity(rows); return;
+    rc.innerHTML=`${filtered.length} response${filtered.length!==1?"s":""}`;
+    renderCommunity(filtered); return;
   }
   if (tabId==="parents"){
     const base=parents(filtered);
@@ -1345,7 +1333,6 @@ function refreshAll(){
   const filtered  = applyGlobal(modeRows);
   document.getElementById("cnt-parent").textContent    = parents(filtered).length;
   document.getElementById("cnt-educator").textContent  = educators(filtered).length;
-  document.getElementById("cnt-community").textContent = communityMembers(filtered).length;
   ["overview","parents","educators","community","voices"].forEach(refreshTab);
   ["parents","educators"].forEach(buildTF);
 
