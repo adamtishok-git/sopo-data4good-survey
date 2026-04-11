@@ -1309,8 +1309,9 @@ async function init(){
   try {
     const {headers,rows}=await fetchAll();
     _headers=headers; _rows=rows;
-    const langs=[...new Set(rows.map(r=>r._lang||"en"))];
-    document.getElementById("total-n").textContent=rows.length||"—";
+    const visRows=applyMode(rows);
+    const langs=[...new Set(visRows.map(r=>r._lang||"en"))];
+    document.getElementById("total-n").textContent=visRows.length||"—";
     document.getElementById("lang-n").textContent=langs.length;
     buildLangPills(rows);
     refreshAll();
@@ -1326,7 +1327,7 @@ if (!USE_LOCAL){
     try {
       const {headers,rows}=await fetchAll();
       _headers=headers; _rows=rows;
-      document.getElementById("total-n").textContent=rows.length||"—";
+      document.getElementById("total-n").textContent=applyMode(rows).length||"—";
       buildLangPills(rows);
       refreshAll();
     } catch(e){ console.warn("Refresh failed",e); }
