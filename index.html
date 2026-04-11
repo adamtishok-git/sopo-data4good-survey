@@ -411,7 +411,7 @@
       <div class="hdr-eyebrow">Community-Led · South Portland Public Schools</div>
       <h1>Community Impact Survey</h1>
       <p class="hdr-sub">Live results from families, educators, and community members on the proposed school reconfiguration.</p>
-      <p class="hdr-meta"><strong id="total-n">—</strong> responses &nbsp;·&nbsp; <strong id="lang-n">—</strong> languages</p>
+      <p class="hdr-meta"><strong id="total-n">—</strong> responses</p>
     </div>
     <!-- Desktop action buttons -->
     <div class="hdr-actions">
@@ -570,7 +570,7 @@ const SOURCES = {
     : "https://docs.google.com/spreadsheets/d/e/2PACX-1vSozRCxF9GNbV_u2OV4z11_ea0VSvKqc3D7DCmSFcr_OHV83yFkr6uuW-FfbtGxSAbJPCvQ_nyCnVnm/pub?output=csv",
   es: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQSxZ6OX41KDT5e7fFiYr9PBkRpnwJ4fT4BlbGk2FFySPidElkogg0KJ1q39lovItFCCNbGlnoqU_wJ/pub?output=csv",
   pt: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQefjz0w3uLNY3E0Pu1vVl-8jvKppWkJpAPAUmWc967LJl2rWd0siqWZULA5W5PoaAUn0i7RC4Bicc_/pub?output=csv",
-  fr: "https://docs.google.com/spreadsheets/d/e/2PACX-1vT4k4AKcfnUZr-hl5bEhKVz8jUje2qfHLRyuYtRyRjuRQSAqTXhCHYh6kEZED-udXjx9QB7C2FsIIE/pub?output=csv",
+  fr: "https://docs.google.com/spreadsheets/d/e/2PACX-1vT4k4AKcfnUZr-hl5bEhKVz8jUje2qfHLRyuYtRyRjuRQSAqTXhCHYh6kEZED-udXjx9QB7C2fMsIIE/pub?output=csv",
   ln: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQCxMLyKiP7ZpY14GQVcWt3CmYAUHIXU9GY9-qUMrUSL5BPRClmjjdGVBbAz6DdjDjmAJHKms4fh6nw/pub?output=csv",
   ht: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSbrYJ0z8CEcNtjCUj1OGCIDv_uc9r-oXc_rLUs7-3-QI4rZXOj778ssqrru79LsH_Ul6aqoFCvaAgz/pub?output=csv",
   ar: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRVdiz6ZTuvy_JoRxxNVijuCLrI0UT0_1-kGQsSYLnXV5Wo1DydTaTvJbkNfJLoB1UjCE50F2QTU2n7/pub?output=csv",
@@ -1346,9 +1346,7 @@ async function init(){
     const {headers,rows}=await fetchAll();
     _headers=headers; _rows=rows;
     const visRows=applyMode(rows);
-    const langs=[...new Set(visRows.map(r=>r._lang||"en"))];
     document.getElementById("total-n").textContent=visRows.length||"—";
-    document.getElementById("lang-n").textContent=langs.length;
     buildLangPills(rows);
     refreshAll();
     document.getElementById("status-bar").style.display="none";
