@@ -717,7 +717,9 @@ function fcolsAll(sub) {
 function getRole(row) {
   const col=fcol("Which of the following describes you");
   if (!col) return "community";
-  const v=(row[col]||"").toLowerCase();
+  // norm() maps translated option text → English before keyword matching,
+  // so Spanish/Portuguese/etc. parents and educators are classified correctly.
+  const v=norm((row[col]||"").trim()).toLowerCase();
   const p=v.includes("parent")||v.includes("guardian");
   const e=v.includes("educator")||v.includes("staff")||v.includes("employed");
   if (p&&e) return "both";
