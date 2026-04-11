@@ -579,6 +579,7 @@ const LANG_LABEL = { en:"English", es:"Spanish", pt:"Portuguese", fr:"French", l
 
 // ─── STATE ───────────────────────────────────────────────────────────────────
 let _rows = [], _headers = [];
+let _pipelineLog = [];   // [{lang, status, total, cols, enCols, error}]
 let gf = { lang:"all", role:"all" };
 let tf = {
   parents:   { level:"all", needs:"all", children:"all" },
@@ -631,36 +632,67 @@ function parseCSVPositional(text) {
 }
 
 // ─── FETCH ───────────────────────────────────────────────────────────────────
+async function fetchWithRetry(url, attempts=2) {
+  let lastErr;
+  for (let i=0; i<attempts; i++) {
+    try {
+      if (i>0) await new Promise(r=>setTimeout(r, 1200*i));
+      const resp = await fetch(url);
+      if (resp.ok) return resp;
+      lastErr = new Error("HTTP "+resp.status);
+    } catch(e) { lastErr=e; }
+  }
+  throw lastErr;
+}
+
 async function fetchAll() {
+  _pipelineLog = [];
   const bust = USE_LOCAL ? "" : ("&t="+Date.now());
-  const enResp = await fetch(SOURCES.en + bust);
+
+  // ── English (required) ────────────────────────────────────────────────────
+  const enResp = await fetchWithRetry(SOURCES.en + bust);
   if (!enResp.ok) throw new Error("English CSV: HTTP "+enResp.status);
   const {headers:enH, rows:enRows} = parseCSVEn(await enResp.text());
   enRows.forEach(r=>r._lang="en");
+  _pipelineLog.push({lang:"en", status:"ok", total:enRows.length, cols:enH.length, enCols:enH.length});
 
   let allRows = [...enRows];
 
+  // ── Multilingual (best-effort, with retry) ────────────────────────────────
   if (!USE_LOCAL) {
     const others = Object.entries(SOURCES).filter(([k])=>k!=="en");
     const settled = await Promise.allSettled(
       others.map(([lang,url])=>
-        fetch(url+"&t="+Date.now()).then(r=>{
-          if(!r.ok) throw new Error("HTTP "+r.status);
-          return r.text();
-        }).then(t=>({lang,t}))
+        fetchWithRetry(url+"&t="+Date.now())
+          .then(r=>r.text())
+          .then(t=>({lang,t}))
       )
     );
-    settled.forEach(res=>{
-      if (res.status!=="fulfilled") return;
-      const {lang,t}=res.value;
+    settled.forEach((res,i)=>{
+      const lang = others[i][0];
+      if (res.status!=="fulfilled"){
+        _pipelineLog.push({lang, status:"error", error:(res.reason?.message||"fetch failed")});
+        console.warn("Fetch failed:", lang, res.reason);
+        return;
+      }
+      const {t} = res.value;
       try {
-        parseCSVPositional(t).forEach(vals=>{
+        const parsed = parseCSVPositional(t);
+        const sampleCols = parsed[0]?.length ?? 0;
+        if (sampleCols && sampleCols !== enH.length)
+          console.warn(`Column count mismatch [${lang}]: expected ${enH.length}, got ${sampleCols}`);
+        parsed.forEach(vals=>{
           const obj={};
-          enH.forEach((h,i)=>{ obj[h]=(vals[i]||""); });
+          enH.forEach((h,idx)=>{ obj[h]=(vals[idx]||""); });
           obj._lang=lang;
+          obj._colCount=sampleCols;  // attach for diagnostics
           allRows.push(obj);
         });
-      } catch(e){ console.warn("Parse fail",lang,e); }
+        _pipelineLog.push({lang, status:"ok", total:parsed.length, cols:sampleCols, enCols:enH.length});
+      } catch(e){
+        _pipelineLog.push({lang, status:"parse-error", error:e.message});
+        console.warn("Parse failed:", lang, e);
+      }
     });
   }
 
@@ -1249,16 +1281,20 @@ function refreshAll(){
   ["overview","parents","educators","voices"].forEach(refreshTab);
   ["parents","educators"].forEach(buildTF);
 
-  // In test mode, update the banner to show a per-language breakdown so it's
-  // easy to see which languages are being detected without opening the console.
+  // In test mode, show a per-source diagnostic: loaded rows, detected test rows,
+  // column count warnings, and fetch errors — all visible without DevTools.
   if (IS_TEST){
-    const byLang={};
-    modeRows.forEach(r=>{ const l=r._lang||"en"; byLang[l]=(byLang[l]||0)+1; });
-    const breakdown=Object.entries(byLang)
-      .map(([l,n])=>`${LANG_LABEL[l]||l}: ${n}`)
-      .join("  ·  ");
+    const testByLang={};
+    modeRows.forEach(r=>{ const l=r._lang||"en"; testByLang[l]=(testByLang[l]||0)+1; });
+    const srcInfo=_pipelineLog.map(e=>{
+      const name=LANG_LABEL[e.lang]||e.lang;
+      if (e.status!=="ok") return `${name}:✗${e.error||e.status}`;
+      const det=testByLang[e.lang]||0;
+      const colWarn=(e.cols&&e.cols!==e.enCols)?` ⚠${e.cols}cols`:"";
+      return `${name}:${det}/${e.total}${colWarn}`;
+    }).join("  ·  ");
     const mb=document.getElementById("mode-banner");
-    mb.textContent=`⚠ TEST MODE — ${modeRows.length} test row${modeRows.length!==1?"s":""} detected${breakdown?" ("+breakdown+")":""}`;
+    mb.textContent=`⚠ TEST MODE — ${modeRows.length} test rows  |  ${srcInfo}`;
   }
 }
 
