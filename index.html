@@ -735,11 +735,17 @@ function norm(v){ return _tmap[v] || v; }
 function countV(rows, cols, type="single") {
   if (!Array.isArray(cols)) cols=[cols];
   const c={};
-  rows.forEach(r=>cols.forEach(col=>{
-    const raw=(r[col]||"").trim(); if (!raw) return;
+  rows.forEach(r=>{
+    // First-non-empty: respondents are routed to exactly one section copy of
+    // each question, so we take the first column that has a value and stop.
+    // This correctly aggregates community (Section 5) with parents (Section 2)
+    // and educators (Section 4) without double-counting "both" respondents.
+    let raw="";
+    for (const col of cols){ raw=(r[col]||"").trim(); if (raw) break; }
+    if (!raw) return;
     if (type==="multi") raw.split(/,\s*/).forEach(v=>{const t=norm(v.trim());if(t)c[t]=(c[t]||0)+1;});
     else { const t=norm(raw); c[t]=(c[t]||0)+1; }
-  }));
+  });
   return c;
 }
 function pct(n,d){ return d?Math.round(n/d*100):0; }
@@ -927,8 +933,8 @@ function mkHead(eyebrow, title, descText){
 }
 
 function mkStatCard(label, rows, colSub, posKeys, palette, descText, type="single"){
-  const col=fcol(colSub); if (!col) return null;
-  const cnts=countV(rows,col,type);
+  const cols=fcolsAll(colSub); if (!cols.length) return null;
+  const cnts=countV(rows,cols,type);
   const total=Object.values(cnts).reduce((a,b)=>a+b,0); if (!total) return null;
   const posN=posKeys.reduce((s,k)=>s+(cnts[k]||0),0);
   const p=pct(posN,total);
@@ -951,7 +957,8 @@ function mkStatCard(label, rows, colSub, posKeys, palette, descText, type="singl
 }
 
 function mkRanked(title, descText, rows, colSubs, type="multi", max=8){
-  const cols=([].concat(colSubs)).flatMap(s=>type==="multi"?fcolsAll(s):([fcol(s)].filter(Boolean)));
+  // Always use fcolsAll so Section 5 copies (answered by community/all) are included.
+  const cols=[...new Set(([].concat(colSubs)).flatMap(s=>fcolsAll(s)))];
   if (!cols.length) return null;
   const cnts=countV(rows,cols,type);
   const entries=desc(cnts).slice(0,max);
