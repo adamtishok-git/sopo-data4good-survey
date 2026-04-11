@@ -1218,7 +1218,7 @@ function buildTF(tabId){
 
 // ─── REFRESH ─────────────────────────────────────────────────────────────────
 function refreshTab(tabId){
-  const filtered=applyGlobal(_rows);
+  const filtered=applyGlobal(applyMode(_rows));
   if (tabId==="overview"){ renderOverview(filtered); return; }
   if (tabId==="voices")  { renderVoices(filtered);   return; }
   if (tabId==="parents"){
