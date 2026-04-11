@@ -621,9 +621,9 @@ function mkHead(eyebrow, title, descText){
   return d;
 }
 
-function mkStatCard(label, rows, colSub, posKeys, palette, descText){
+function mkStatCard(label, rows, colSub, posKeys, palette, descText, type="single"){
   const col=fcol(colSub); if (!col) return null;
-  const cnts=countV(rows,col,"single");
+  const cnts=countV(rows,col,type);
   const total=Object.values(cnts).reduce((a,b)=>a+b,0); if (!total) return null;
   const posN=posKeys.reduce((s,k)=>s+(cnts[k]||0),0);
   const p=pct(posN,total);
@@ -753,6 +753,8 @@ function renderParents(rows){
   tc.appendChild(tl); tc.appendChild(tr);
   append(tl, mkRanked("How would transportation change if child moves buildings?",null,
     rows,["moves to a different building, how would your transportation"],"multi",6));
+  append(tl, mkRanked("Longest acceptable one-way bus ride",null,
+    rows,["longest one-way bus ride that would be acceptable"],"single",6));
   append(tl, mkRanked("When families need to know their assignment",null,
     rows,["When do you need to know your child"],"single",5));
   append(tr, mkRanked("Most important information still needed",
@@ -767,7 +769,7 @@ function renderParents(rows){
   const cr=mkStatCard("How children are responding",rows,
     "children currently responding to the possibility",
     ["Positive — curious or excited about something new"],
-    COLORS.childresp,"responding positively — curious or excited");
+    COLORS.childresp,"responding positively — curious or excited","multi");
   if (cr) kg.appendChild(cr);
   append(el, mkRanked("Child's adaptability to significant change",null,
     rows,["How would you describe your child"],"single",5));
