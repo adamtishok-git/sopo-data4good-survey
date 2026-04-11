@@ -579,7 +579,7 @@ let _rows = [], _headers = [];
 let gf = { lang:"all", role:"all" };
 let tf = {
   parents:   { level:"all", needs:"all" },
-  educators: { band:"all",  role:"all"  },
+  educators: { band:"all",  role:"all", tenure:"all" },
 };
 let _voiceKey = null;
 
@@ -840,6 +840,18 @@ function applyTF(rows,tab){
           if (f.role==="admin"&&!(v.includes("administrator")||v.includes("coach")||v.includes("support staff"))) return false;
         }
       }
+      if (f.tenure!=="all"){
+        const col=fcol("how long have you been")||fcol("years at your current school")||fcol("long have you worked at your current");
+        if (col){
+          const v=(r[col]||"").toLowerCase();
+          // "Under 3 yrs" — less than 1 year OR 1-3 years
+          if (f.tenure==="new" &&!(v.includes("less than 1")||v.includes("less than a year")||v.match(/^1[-–]?3/)||v.includes("1-3")||v.includes("1–3")||v.includes("one to three"))) return false;
+          // "3–10 yrs" — 3-5 or 5-10 or similar
+          if (f.tenure==="mid" &&!(v.match(/3[-–]5/)||v.match(/5[-–]10/)||v.includes("3-5")||v.includes("5-10")||v.includes("3–5")||v.includes("5–10")||v.includes("three to")||v.includes("four to")||v.includes("five to")||v.includes("six to")||v.includes("seven to")||v.includes("eight to")||v.includes("nine to"))) return false;
+          // "10+ yrs"
+          if (f.tenure==="vet" &&!(v.includes("10+")||v.includes("more than 10")||v.includes("over 10")||v.match(/1[0-9]\+/)||v.includes("10 or more"))) return false;
+        }
+      }
     }
     return true;
   });
@@ -1036,6 +1048,20 @@ function renderEducators(rows){
   append(el, mkRanked("How much preparation time is needed before implementing grade-band reconfiguration?",null,
     rows,["preparation time do you believe is needed"],"single",6));
 
+  // When educators change schools
+  append(el, mkHead("When Educators Change Schools","How long each aspect of a school transition takes, from those who've experienced one"));
+  const tc=document.createElement("div"); tc.className="two-col"; el.appendChild(tc);
+  const tcl=document.createElement("div"); const tcr=document.createElement("div");
+  tc.appendChild(tcl); tc.appendChild(tcr);
+  append(tcl, mkRanked("Physically moving and setting up your new space",null,
+    rows,["physically moving and setting up"],"single",6));
+  append(tcl, mkRanked("Learning expectations of your new building administration/leadership",null,
+    rows,["learning expectations of your new building"],"single",6));
+  append(tcr, mkRanked("Feeling settled in the new school's culture and routines",null,
+    rows,["settled in the new school"],"single",6));
+  append(tcr, mkRanked("Feeling settled with your fellow team of teachers",null,
+    rows,["settled with fellow team","settled with your fellow"],"single",6));
+
   // What educators need
   append(el, mkHead("What Educators Need","Assignment priorities &amp; critical supports"));
   const nc=document.createElement("div"); nc.className="two-col"; el.appendChild(nc);
@@ -1049,13 +1075,16 @@ function renderEducators(rows){
     rows,["three supports are most critical to your ability to serve students"],"multi",7));
 
   // What district must do
-  append(el, mkHead("What the District Must Do","Top preparation areas and continuity priorities"));
+  append(el, mkHead("What the District Must Do","Top preparation areas, class size expectations &amp; continuity priorities"));
   const dc=document.createElement("div"); dc.className="two-col"; el.appendChild(dc);
   const dl=document.createElement("div"); const dr=document.createElement("div");
   dc.appendChild(dl); dc.appendChild(dr);
   append(dl, mkRanked("Transition preparation areas that need the most attention",
     "Respondents could select up to 3",
     rows,["transition preparation areas need the most attention"],"multi",6));
+  append(dl, mkRanked("What feels like an appropriate and manageable class size?",
+    null,
+    rows,["appropriate and manageable class size","manageable class size"],"single",6));
   append(dr, mkRanked("Continuity aspects most important to plan for",
     "Respondents could select up to 3",
     rows,["aspects of continuity are most important to plan for"],"multi",7));
@@ -1146,6 +1175,7 @@ function buildTF(tabId){
     const cfg=[
       {label:"Grade band", key:"band", opts:[["all","All"],["elementary","Elementary"],["middle","Middle"],["high","High School"]]},
       {label:"Role", key:"role", opts:[["all","All"],["classroom","Classroom Teachers"],["sped","SpEd &amp; Support"],["admin","Admin &amp; Other"]]},
+      {label:"Time at current school", key:"tenure", opts:[["all","All"],["new","Under 3 yrs"],["mid","3–10 yrs"],["vet","10+ yrs"]]},
     ];
     cfg.forEach((g,gi)=>{
       if (gi>0){ const s=document.createElement("div"); s.style.cssText="width:1px;height:16px;background:var(--border);margin:0 4px"; bar.appendChild(s); }
