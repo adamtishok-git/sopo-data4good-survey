@@ -335,8 +335,9 @@
     .survey-link:hover { border-color: var(--red); background: var(--red-tint); color: var(--red); }
     .survey-link-lang { font-size: 0.68rem; color: var(--text-3); margin-top: 1px; }
     .survey-link:hover .survey-link-lang { color: var(--red-mid); }
-    .survey-link-arrow { color: var(--text-3); font-size: 0.9rem; flex-shrink: 0; margin-left: 10px; }
+    .survey-link-arrow { color: var(--text-3); flex-shrink: 0; margin-left: 10px; display: flex; align-items: center; }
     .survey-link:hover .survey-link-arrow { color: var(--red); }
+    .survey-link-lang-placeholder { font-size: 0.68rem; margin-top: 1px; visibility: hidden; }
     .modal-intro { font-size: 0.84rem; color: var(--text-2); line-height: 1.6; margin-bottom: 14px; }
 
     /* ── RESPONSIVE ── */
@@ -523,32 +524,32 @@
       <p class="modal-intro">The survey is available in 7 languages. Select your preferred language below to open the form.</p>
       <div class="survey-link-list">
         <a class="survey-link" href="https://docs.google.com/forms/d/1SKdmZ_i8HFxvOXijOohIo1dJMym5pafghn8A3jyIzuE/viewform" target="_blank" rel="noopener">
-          <div><div>English</div></div>
-          <span class="survey-link-arrow">&#8599;</span>
+          <div><div>English</div><div class="survey-link-lang-placeholder">English</div></div>
+          <span class="survey-link-arrow"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2H2.5A1.5 1.5 0 001 3.5v8A1.5 1.5 0 002.5 13h8A1.5 1.5 0 0012 11.5V8"/><polyline points="8.5 1 13 1 13 5.5"/><line x1="13" y1="1" x2="6.5" y2="7.5"/></svg></span>
         </a>
         <a class="survey-link" href="https://docs.google.com/forms/d/1JI6uHBETiajtR-rd7n-A4MCBkkt2SjQXznPsZ_D2euc/viewform" target="_blank" rel="noopener">
           <div><div>Español</div><div class="survey-link-lang">Spanish</div></div>
-          <span class="survey-link-arrow">&#8599;</span>
+          <span class="survey-link-arrow"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2H2.5A1.5 1.5 0 001 3.5v8A1.5 1.5 0 002.5 13h8A1.5 1.5 0 0012 11.5V8"/><polyline points="8.5 1 13 1 13 5.5"/><line x1="13" y1="1" x2="6.5" y2="7.5"/></svg></span>
         </a>
         <a class="survey-link" href="https://docs.google.com/forms/d/14wOJ-NVCg5WbJBYRrHSj94bgryZLQHgqlmZNjPV7ek0/viewform" target="_blank" rel="noopener">
           <div><div>Português</div><div class="survey-link-lang">Portuguese</div></div>
-          <span class="survey-link-arrow">&#8599;</span>
+          <span class="survey-link-arrow"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2H2.5A1.5 1.5 0 001 3.5v8A1.5 1.5 0 002.5 13h8A1.5 1.5 0 0012 11.5V8"/><polyline points="8.5 1 13 1 13 5.5"/><line x1="13" y1="1" x2="6.5" y2="7.5"/></svg></span>
         </a>
         <a class="survey-link" href="https://docs.google.com/forms/d/1hwK1KmtITWOCv2Cu0kcTSfoc9T_0tml9ut-aLB9GskY/viewform" target="_blank" rel="noopener">
           <div><div>Français</div><div class="survey-link-lang">French</div></div>
-          <span class="survey-link-arrow">&#8599;</span>
+          <span class="survey-link-arrow"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2H2.5A1.5 1.5 0 001 3.5v8A1.5 1.5 0 002.5 13h8A1.5 1.5 0 0012 11.5V8"/><polyline points="8.5 1 13 1 13 5.5"/><line x1="13" y1="1" x2="6.5" y2="7.5"/></svg></span>
         </a>
         <a class="survey-link" href="https://docs.google.com/forms/d/1KLwck6s7VXqha_Wq0xVbU4AfvqO__LfY-UpyrYGnrQY/viewform" target="_blank" rel="noopener">
           <div><div>Kreyòl Ayisyen</div><div class="survey-link-lang">Haitian Creole</div></div>
-          <span class="survey-link-arrow">&#8599;</span>
+          <span class="survey-link-arrow"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2H2.5A1.5 1.5 0 001 3.5v8A1.5 1.5 0 002.5 13h8A1.5 1.5 0 0012 11.5V8"/><polyline points="8.5 1 13 1 13 5.5"/><line x1="13" y1="1" x2="6.5" y2="7.5"/></svg></span>
         </a>
         <a class="survey-link" href="https://docs.google.com/forms/d/1DXH2r1XFLgqw6-i5plkGq1_BxnTa7D3eW6bgO5xIOZk/viewform" target="_blank" rel="noopener">
           <div><div>Lingála</div><div class="survey-link-lang">Lingala</div></div>
-          <span class="survey-link-arrow">&#8599;</span>
+          <span class="survey-link-arrow"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2H2.5A1.5 1.5 0 001 3.5v8A1.5 1.5 0 002.5 13h8A1.5 1.5 0 0012 11.5V8"/><polyline points="8.5 1 13 1 13 5.5"/><line x1="13" y1="1" x2="6.5" y2="7.5"/></svg></span>
         </a>
         <a class="survey-link" href="https://docs.google.com/forms/d/1KRBi4VP4useke6qzIBZC63vszgH_GKjF-m9UYpsF9Q0/viewform" target="_blank" rel="noopener">
           <div><div>العربية</div><div class="survey-link-lang">Arabic</div></div>
-          <span class="survey-link-arrow">&#8599;</span>
+          <span class="survey-link-arrow"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2H2.5A1.5 1.5 0 001 3.5v8A1.5 1.5 0 002.5 13h8A1.5 1.5 0 0012 11.5V8"/><polyline points="8.5 1 13 1 13 5.5"/><line x1="13" y1="1" x2="6.5" y2="7.5"/></svg></span>
         </a>
       </div>
     </div>
