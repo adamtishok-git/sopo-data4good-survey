@@ -1180,6 +1180,11 @@ function renderCommunity(rows){
   const el=document.getElementById("c-body"); el.innerHTML="";
   if (!rows.length){ el.innerHTML=`<div class="no-data">No responses match the current filters.</div>`; return; }
 
+  const intro=document.createElement("p");
+  intro.style.cssText="font-size:0.8rem;color:var(--text-2);line-height:1.6;margin-bottom:28px;max-width:640px";
+  intro.textContent="Responses from South Portland community members — residents without children currently enrolled in the district. The questions in this section were answered by all survey respondents regardless of role.";
+  el.appendChild(intro);
+
   // Sentiment
   append(el, mkHead("How Community Members Feel","Sentiment from community members on trust, information &amp; process"));
   const sg=document.createElement("div"); sg.className="stat-grid"; el.appendChild(sg);
