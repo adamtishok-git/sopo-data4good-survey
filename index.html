@@ -973,7 +973,14 @@ function mkStatCard(label, rows, colSub, posKeys, palette, descText, type="singl
   const cols=fcolsAll(colSub); if (!cols.length) return null;
   const cnts=countV(rows,cols,type);
   const total=Object.values(cnts).reduce((a,b)=>a+b,0); if (!total) return null;
-  const posN=posKeys.reduce((s,k)=>s+(cnts[k]||0),0);
+  // posKeys may be short labels (e.g. "Moderate trust") while the actual option
+  // text includes a descriptive suffix after an em-dash.  Normalize by stripping
+  // everything after the first em/en-dash before comparing.
+  const normK=s=>s.split(/\s*[—–]\s*/)[0].trim().toLowerCase();
+  const posN=posKeys.reduce((s,k)=>{
+    const nk=normK(k);
+    return s+Object.entries(cnts).reduce((a,[key,n])=>a+(normK(key)===nk?n:0),0);
+  },0);
   const p=pct(posN,total);
   const card=document.createElement("div"); card.className="stat-card";
   let bd="";
