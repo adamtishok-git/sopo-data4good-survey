@@ -586,6 +586,7 @@ const LANG_LABEL = { en:"English", es:"Spanish", pt:"Portuguese", fr:"French", l
 let _rows = [], _headers = [];
 let _pipelineLog = [];   // [{lang, status, total, cols, enCols, error}]
 let _tmap = {};          // translated option → English option
+let _knownOpts = [];     // all known option strings sorted longest-first, for smart multi-split
 let gf = { lang:"all", role:"all" };
 let tf = {
   parents:   { level:"all", needs:"all", children:"all" },
@@ -737,6 +738,36 @@ function getRole(row) {
 // Free-text / "Other" values that aren't in the map pass through unchanged.
 function norm(v){ return _tmap[v] || v; }
 
+// Build _knownOpts after _tmap is loaded.  Contains every translated and English
+// option string we know about, sorted longest-first so greedy matching works.
+function buildKnownOpts(){
+  const s=new Set([...Object.keys(_tmap),...Object.values(_tmap)]);
+  _knownOpts=[...s].sort((a,b)=>b.length-a.length);
+}
+
+// Split a raw multi-select cell value into individual option strings.
+// Google Forms joins checkbox selections with ", " but option texts can also
+// contain ", " (e.g. "Related arts / specialist (music, PE, art, STEM, library)").
+// We greedily match known option strings first; anything unmatched falls back
+// to a plain comma-split so free-text / unknown options still work.
+function splitMulti(raw){
+  if(!_knownOpts.length) return raw.split(/,\s*/);
+  const results=[];
+  let s=raw;
+  while(s.length){
+    let matched=false;
+    for(const opt of _knownOpts){
+      if(s===opt){ results.push(opt); s=""; matched=true; break; }
+      if(s.startsWith(opt+", ")){ results.push(opt); s=s.slice(opt.length+2); matched=true; break; }
+    }
+    if(!matched){
+      s.split(/,\s*/).forEach(v=>{ if(v.trim()) results.push(v.trim()); });
+      break;
+    }
+  }
+  return results;
+}
+
 function countV(rows, cols, type="single") {
   if (!Array.isArray(cols)) cols=[cols];
   const c={};
@@ -748,7 +779,7 @@ function countV(rows, cols, type="single") {
     let raw="";
     for (const col of cols){ raw=(r[col]||"").trim(); if (raw) break; }
     if (!raw) return;
-    if (type==="multi") raw.split(/,\s*/).forEach(v=>{const t=norm(v.trim());if(t)c[t]=(c[t]||0)+1;});
+    if (type==="multi") splitMulti(raw).forEach(v=>{const t=norm(v.trim());if(t)c[t]=(c[t]||0)+1;});
     else { const t=norm(raw); c[t]=(c[t]||0)+1; }
   });
   return c;
@@ -1400,7 +1431,7 @@ async function init(){
   // Silently ignored if missing — site works without it, just won't aggregate translations.
   try {
     const tmResp = await fetch("translation_map.json");
-    if (tmResp.ok) _tmap = await tmResp.json();
+    if (tmResp.ok) { _tmap = await tmResp.json(); buildKnownOpts(); }
   } catch(e) { /* optional — no map = no normalization */ }
 
   showStatus("Loading survey data…","loading");
