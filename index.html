@@ -1091,17 +1091,17 @@ function renderEducators(rows){
     "Respondents could select up to 3",
     rows,["aspects of continuity are most important to plan for"],"multi",7));
 
-  // Kids through educator eyes
-  append(el, mkHead("Through Educator Eyes","How students are handling this change"));
-  append(el, mkRanked("How students in your classroom or caseload are responding",null,
+  // How students handle change
+  append(el, mkHead("How Students Handle Change","Educator perspectives on student adjustment and transition"));
+  append(el, mkRanked("How students in your classroom or caseload respond to change",null,
     rows,["students in your current classroom or caseload responding"],"single",5));
   const ec=document.createElement("div"); ec.className="two-col"; el.appendChild(ec);
   const el2=document.createElement("div"); const er2=document.createElement("div");
   ec.appendChild(el2); ec.appendChild(er2);
   append(el2, mkRanked("How much of student progress depends on relationships that won't follow them?",null,
     rows,["current progress depends on"],"single",5));
-  append(er2, mkRanked("Time for a high-needs student to re-establish working relationships after a school change",null,
-    rows,["long does a student with significant behavioral"],"single",5));
+  append(er2, mkRanked("In your experience, how long does a student with significant behavioral or emotional needs take to re-establish effective working relationships after a school change?",null,
+    rows,["long does a student with significant behavioral","re-establish effective working relationships"],"single",5));
 }
 
 // ─── RENDER VOICES ────────────────────────────────────────────────────────────
