@@ -317,6 +317,7 @@
 <body>
 
 <div id="status-bar"></div>
+<div id="mode-banner" style="display:none;padding:6px 20px;font-size:0.72rem;font-weight:600;text-align:center;letter-spacing:.03em"></div>
 
 <header>
   <div class="hdr-inner">
@@ -392,11 +393,15 @@
 
 <script>
 // ─── CONFIG ──────────────────────────────────────────────────────────────────
-const IS_PREVIEW = new URLSearchParams(location.search).has("preview");
+const _params    = new URLSearchParams(location.search);
+const IS_PREVIEW = _params.has("preview");
+const IS_DUMMY   = _params.has("dummydata");
+const IS_TEST    = _params.has("test");
+const USE_LOCAL  = IS_PREVIEW || IS_DUMMY;
 const REFRESH_MS = 5 * 60 * 1000;
 
 const SOURCES = {
-  en: IS_PREVIEW ? "simulated_responses.csv"
+  en: USE_LOCAL ? "simulated_responses.csv"
     : "https://docs.google.com/spreadsheets/d/e/2PACX-1vSozRCxF9GNbV_u2OV4z11_ea0VSvKqc3D7DCmSFcr_OHV83yFkr6uuW-FfbtGxSAbJPCvQ_nyCnVnm/pub?output=csv",
   es: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQSxZ6OX41KDT5e7fFiYr9PBkRpnwJ4fT4BlbGk2FFySPidElkogg0KJ1q39lovItFCCNbGlnoqU_wJ/pub?output=csv",
   pt: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQefjz0w3uLNY3E0Pu1vVl-8jvKppWkJpAPAUmWc967LJl2rWd0siqWZULA5W5PoaAUn0i7RC4Bicc_/pub?output=csv",
@@ -470,7 +475,7 @@ async function fetchAll() {
 
   let allRows = [...enRows];
 
-  if (!IS_PREVIEW) {
+  if (!USE_LOCAL) {
     const others = Object.entries(SOURCES).filter(([k])=>k!=="en");
     const settled = await Promise.allSettled(
       others.map(([lang,url])=>
@@ -598,6 +603,21 @@ const COLORS={
 
 function scoreCls(p){ return p>=60?"good":p>=35?"warn":"bad"; }
 function palColor(pal,lbl){ return (pal&&pal[lbl])||"#6B7280"; }
+
+// ─── TEST / DUMMY MODE ────────────────────────────────────────────────────────
+function getEmailCol(){
+  return _headers.find(h=>h.toLowerCase().includes("email"))
+    || _headers[_headers.length-1]
+    || null;
+}
+function isTestRow(row){
+  const col=getEmailCol(); if (!col) return false;
+  return (row[col]||"").trim().toLowerCase()==="test";
+}
+function applyMode(rows){
+  if (IS_TEST)  return rows.filter(r=> isTestRow(r));
+  return rows.filter(r=>!isTestRow(r));
+}
 
 // ─── FILTERING ───────────────────────────────────────────────────────────────
 function applyGlobal(rows){
@@ -1003,7 +1023,7 @@ function refreshTab(tabId){
 }
 
 function refreshAll(){
-  const filtered=applyGlobal(_rows);
+  const filtered=applyGlobal(applyMode(_rows));
   document.getElementById("cnt-parent").textContent   = parents(filtered).length;
   document.getElementById("cnt-educator").textContent = educators(filtered).length;
   ["overview","parents","educators","voices"].forEach(refreshTab);
@@ -1044,6 +1064,15 @@ function showStatus(msg,type){
 
 // ─── BOOT ────────────────────────────────────────────────────────────────────
 async function init(){
+  // Mode banner
+  const mb=document.getElementById("mode-banner");
+  if (IS_TEST){
+    mb.style.cssText="display:block;padding:6px 20px;font-size:0.72rem;font-weight:600;text-align:center;background:#FEF3C7;color:#92400E;border-bottom:1px solid #F5D98F";
+    mb.textContent="⚠ TEST MODE — showing only test responses";
+  } else if (IS_DUMMY){
+    mb.style.cssText="display:block;padding:6px 20px;font-size:0.72rem;font-weight:600;text-align:center;background:#EEF2FF;color:#4338CA;border-bottom:1px solid #C7D2FE";
+    mb.textContent="DUMMY DATA — simulated responses only";
+  }
   showStatus("Loading survey data…","loading");
   try {
     const {headers,rows}=await fetchAll();
@@ -1060,7 +1089,7 @@ async function init(){
   }
 }
 
-if (!IS_PREVIEW){
+if (!USE_LOCAL){
   setInterval(async()=>{
     try {
       const {headers,rows}=await fetchAll();
