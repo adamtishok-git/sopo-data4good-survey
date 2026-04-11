@@ -1242,11 +1242,24 @@ function refreshTab(tabId){
 }
 
 function refreshAll(){
-  const filtered=applyGlobal(applyMode(_rows));
+  const modeRows = applyMode(_rows);
+  const filtered  = applyGlobal(modeRows);
   document.getElementById("cnt-parent").textContent   = parents(filtered).length;
   document.getElementById("cnt-educator").textContent = educators(filtered).length;
   ["overview","parents","educators","voices"].forEach(refreshTab);
   ["parents","educators"].forEach(buildTF);
+
+  // In test mode, update the banner to show a per-language breakdown so it's
+  // easy to see which languages are being detected without opening the console.
+  if (IS_TEST){
+    const byLang={};
+    modeRows.forEach(r=>{ const l=r._lang||"en"; byLang[l]=(byLang[l]||0)+1; });
+    const breakdown=Object.entries(byLang)
+      .map(([l,n])=>`${LANG_LABEL[l]||l}: ${n}`)
+      .join("  ·  ");
+    const mb=document.getElementById("mode-banner");
+    mb.textContent=`⚠ TEST MODE — ${modeRows.length} test row${modeRows.length!==1?"s":""} detected${breakdown?" ("+breakdown+")":""}`;
+  }
 }
 
 // ─── GLOBAL FILTERS ──────────────────────────────────────────────────────────
