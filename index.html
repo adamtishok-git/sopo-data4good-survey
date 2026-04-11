@@ -776,8 +776,17 @@ function getEmailCol(){
     || null;
 }
 function isTestRow(row){
-  const col=getEmailCol(); if (!col) return false;
-  return (row[col]||"").trim().toLowerCase()==="test";
+  const col=getEmailCol();
+  // Primary check: email column (works reliably for English rows)
+  if (col && (row[col]||"").trim().toLowerCase()==="test") return true;
+  // Fallback for multilingual rows: positional mapping may misalign the email
+  // column, so scan every non-meta field for an exact "test" value.
+  if ((row._lang||"en")!=="en"){
+    return Object.entries(row)
+      .filter(([k])=>!k.startsWith("_"))
+      .some(([,v])=>(v||"").trim().toLowerCase()==="test");
+  }
+  return false;
 }
 function applyMode(rows){
   if (IS_TEST)  return rows.filter(r=> isTestRow(r));
