@@ -261,6 +261,84 @@
     #status-bar.error   { background: #FEF0F0; color: #8B0000; }
     .no-data { text-align: center; padding: 52px 20px; color: var(--text-3); font-size: 0.88rem; }
 
+    /* ── HEADER ACTIONS ── */
+    .hdr-actions { display: flex; gap: 8px; flex-shrink: 0; align-items: flex-start; padding-top: 4px; }
+    .hdr-btn {
+      padding: 7px 15px; border-radius: 7px; font-size: 0.78rem; font-weight: 600;
+      cursor: pointer; font-family: inherit; white-space: nowrap;
+      transition: all .12s; line-height: 1;
+    }
+    .hdr-btn-ghost {
+      background: transparent; border: 1px solid var(--border); color: var(--text-2);
+    }
+    .hdr-btn-ghost:hover { border-color: var(--red); color: var(--red); }
+    .hdr-btn-solid {
+      background: var(--red); border: 1px solid var(--red); color: #fff;
+    }
+    .hdr-btn-solid:hover { background: var(--red-dk); border-color: var(--red-dk); }
+    .hdr-hamburger { display: none; flex-shrink: 0; align-items: flex-start; padding-top: 4px; position: relative; }
+    .hdr-mobile-menu {
+      position: absolute; top: calc(100% + 8px); right: 0;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,.12);
+      z-index: 500; min-width: 180px; padding: 8px;
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    .hdr-mobile-menu[hidden] { display: none; }
+    .hdr-mobile-menu .hdr-btn { width: 100%; text-align: center; }
+    .hdr-meta { font-size: 0.73rem; color: var(--text-3); margin-top: 5px; }
+    .hdr-meta strong { color: var(--red); font-weight: 700; }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,.45);
+      z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px;
+    }
+    .modal-overlay[hidden] { display: none; }
+    .modal-box {
+      background: var(--surface); border-radius: 14px;
+      max-width: 600px; width: 100%; max-height: 85vh;
+      display: flex; flex-direction: column;
+      box-shadow: 0 20px 60px rgba(0,0,0,.2);
+    }
+    .modal-head {
+      padding: 24px 24px 16px; display: flex; justify-content: space-between;
+      align-items: flex-start; flex-shrink: 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .modal-title {
+      font-family: "Source Serif 4", Georgia, serif;
+      font-size: 1.15rem; font-weight: 700; color: var(--text); line-height: 1.2;
+    }
+    .modal-close {
+      background: none; border: none; font-size: 1.1rem; color: var(--text-3);
+      cursor: pointer; padding: 0 0 0 16px; line-height: 1; flex-shrink: 0;
+    }
+    .modal-close:hover { color: var(--text); }
+    .modal-body { padding: 20px 24px 24px; overflow-y: auto; }
+    .modal-section { margin-bottom: 18px; }
+    .modal-section:last-child { margin-bottom: 0; }
+    .modal-section-h {
+      font-size: 0.7rem; font-weight: 700; letter-spacing: .07em;
+      text-transform: uppercase; color: var(--red); margin-bottom: 6px;
+    }
+    .modal-section-body { font-size: 0.84rem; color: var(--text-2); line-height: 1.65; }
+    .modal-disc-item { margin-top: 10px; }
+    .modal-disc-item strong { color: var(--text); }
+    .survey-link-list { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+    .survey-link {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 13px 16px; background: var(--bg); border: 1px solid var(--border);
+      border-radius: 8px; text-decoration: none; color: var(--text);
+      font-size: 0.84rem; font-weight: 500; transition: all .12s;
+    }
+    .survey-link:hover { border-color: var(--red); background: var(--red-tint); color: var(--red); }
+    .survey-link-lang { font-size: 0.68rem; color: var(--text-3); margin-top: 1px; }
+    .survey-link:hover .survey-link-lang { color: var(--red-mid); }
+    .survey-link-arrow { color: var(--text-3); font-size: 0.9rem; flex-shrink: 0; margin-left: 10px; }
+    .survey-link:hover .survey-link-arrow { color: var(--red); }
+    .modal-intro { font-size: 0.84rem; color: var(--text-2); line-height: 1.6; margin-bottom: 14px; }
+
     /* ── RESPONSIVE ── */
     @media (max-width: 700px) {
 
@@ -269,6 +347,11 @@
       header h1 { font-size: 1.25rem; }
       .hdr-sub { font-size: 0.78rem; }
       .hdr-stats { display: none; }
+      .hdr-actions { display: none; }
+      .hdr-hamburger { display: flex; }
+      .modal-box { max-height: 90vh; border-radius: 10px; }
+      .modal-head { padding: 18px 18px 14px; }
+      .modal-body { padding: 16px 18px 20px; }
 
       /* Global filter bar — single scrollable row stays, just tighten padding */
       .gf-bar { padding: 0 12px; }
@@ -325,15 +408,19 @@
       <div class="hdr-eyebrow">Community-Led · South Portland Public Schools</div>
       <h1>Community Impact Survey</h1>
       <p class="hdr-sub">Live results from families, educators, and community members on the proposed school reconfiguration.</p>
+      <p class="hdr-meta"><strong id="total-n">—</strong> responses &nbsp;·&nbsp; <strong id="lang-n">—</strong> languages</p>
     </div>
-    <div class="hdr-stats">
-      <div class="hdr-stat">
-        <div class="hdr-stat-n" id="total-n">—</div>
-        <div class="hdr-stat-l">Responses</div>
-      </div>
-      <div class="hdr-stat">
-        <div class="hdr-stat-n" id="lang-n">—</div>
-        <div class="hdr-stat-l">Languages</div>
+    <!-- Desktop action buttons -->
+    <div class="hdr-actions">
+      <button class="hdr-btn hdr-btn-ghost" onclick="openModal('about-modal')">About</button>
+      <button class="hdr-btn hdr-btn-solid" onclick="openModal('survey-modal')">Take the Survey</button>
+    </div>
+    <!-- Mobile hamburger -->
+    <div class="hdr-hamburger">
+      <button class="hdr-btn hdr-btn-ghost" id="hamburger-btn" onclick="toggleMobileMenu()">&#9776;</button>
+      <div class="hdr-mobile-menu" id="mobile-menu" hidden>
+        <button class="hdr-btn hdr-btn-ghost" onclick="openModal('about-modal');hideMobileMenu()">About</button>
+        <button class="hdr-btn hdr-btn-solid" onclick="openModal('survey-modal');hideMobileMenu()">Take the Survey</button>
       </div>
     </div>
   </div>
@@ -390,6 +477,81 @@
     <a href="mailto:sopoparents@gmail.com" style="font-size:0.62rem;font-weight:600;color:var(--red);white-space:nowrap;text-decoration:none">sopoparents@gmail.com</a>
   </div>
 </footer>
+
+<!-- ── ABOUT MODAL ─────────────────────────────────────────────────────────── -->
+<div class="modal-overlay" id="about-modal" hidden onclick="handleOverlayClick(event,'about-modal')">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="modal-title">About This Survey &amp; Data</div>
+      <button class="modal-close" onclick="closeModal('about-modal')">&#x2715;</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-section">
+        <div class="modal-section-h">Our Intent</div>
+        <div class="modal-section-body">This community-led project was developed to capture the perspectives of parents and educators regarding the upcoming school reconfiguration. As the district navigates this transition, our goal is to identify the most critical gaps and essential supports from those directly impacted. By highlighting what matters most to families and staff, we aim to help the school department focus its planning on the highest-priority areas.</div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-section-h">Informing Readiness and Transparency</div>
+        <div class="modal-section-body">We believe that the expert opinions of district educators and staff are vital to understanding the operational and educational needs of our schools. This survey is designed to inform the readiness and timing of the transition while providing the School Board, the District, and the community with transparent data on collective stakeholder sentiment.</div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-section-h">Methodology &amp; Resource Allocation</div>
+        <div class="modal-section-body">With the District currently facing an $8M budget deficit and a 12% reduction in staffing, the allocation of finite resources is a significant challenge. To ensure the most essential needs are clearly identified, we utilized a forced-choice methodology. This requires respondents to prioritize specific outcomes, providing a clearer roadmap of "must-haves" versus "nice-to-haves" in a resource-constrained environment.</div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-section-h">Important Disclosures</div>
+        <div class="modal-section-body">
+          <div class="modal-disc-item"><strong>Independent &amp; Community-Led:</strong> This initiative was created and led by community members independently of the School Board or District leadership. However, educators within the District were consulted during the development of the form to ensure questions were relevant and grounded in the classroom experience.</div>
+          <div class="modal-disc-item"><strong>Non-Scientific Data:</strong> This survey was conducted using Google Forms without authentication. As a non-scientific, anonymous survey, the results should be viewed as a "pulse check" of the community rather than a controlled statistical study.</div>
+          <div class="modal-disc-item"><strong>Data Usage:</strong> All data collected is anonymous and is intended to assist in transition planning. No individual names or identifying information were collected.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── TAKE THE SURVEY MODAL ─────────────────────────────────────────────────── -->
+<div class="modal-overlay" id="survey-modal" hidden onclick="handleOverlayClick(event,'survey-modal')">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="modal-title">Take the Survey</div>
+      <button class="modal-close" onclick="closeModal('survey-modal')">&#x2715;</button>
+    </div>
+    <div class="modal-body">
+      <p class="modal-intro">The survey is available in 7 languages. Select your preferred language below to open the form.</p>
+      <div class="survey-link-list">
+        <a class="survey-link" href="https://docs.google.com/forms/d/1SKdmZ_i8HFxvOXijOohIo1dJMym5pafghn8A3jyIzuE/viewform" target="_blank" rel="noopener">
+          <div><div>English</div></div>
+          <span class="survey-link-arrow">&#8599;</span>
+        </a>
+        <a class="survey-link" href="https://docs.google.com/forms/d/1JI6uHBETiajtR-rd7n-A4MCBkkt2SjQXznPsZ_D2euc/viewform" target="_blank" rel="noopener">
+          <div><div>Español</div><div class="survey-link-lang">Spanish</div></div>
+          <span class="survey-link-arrow">&#8599;</span>
+        </a>
+        <a class="survey-link" href="https://docs.google.com/forms/d/14wOJ-NVCg5WbJBYRrHSj94bgryZLQHgqlmZNjPV7ek0/viewform" target="_blank" rel="noopener">
+          <div><div>Português</div><div class="survey-link-lang">Portuguese</div></div>
+          <span class="survey-link-arrow">&#8599;</span>
+        </a>
+        <a class="survey-link" href="https://docs.google.com/forms/d/1hwK1KmtITWOCv2Cu0kcTSfoc9T_0tml9ut-aLB9GskY/viewform" target="_blank" rel="noopener">
+          <div><div>Français</div><div class="survey-link-lang">French</div></div>
+          <span class="survey-link-arrow">&#8599;</span>
+        </a>
+        <a class="survey-link" href="https://docs.google.com/forms/d/1KLwck6s7VXqha_Wq0xVbU4AfvqO__LfY-UpyrYGnrQY/viewform" target="_blank" rel="noopener">
+          <div><div>Kreyòl Ayisyen</div><div class="survey-link-lang">Haitian Creole</div></div>
+          <span class="survey-link-arrow">&#8599;</span>
+        </a>
+        <a class="survey-link" href="https://docs.google.com/forms/d/1DXH2r1XFLgqw6-i5plkGq1_BxnTa7D3eW6bgO5xIOZk/viewform" target="_blank" rel="noopener">
+          <div><div>Lingála</div><div class="survey-link-lang">Lingala</div></div>
+          <span class="survey-link-arrow">&#8599;</span>
+        </a>
+        <a class="survey-link" href="https://docs.google.com/forms/d/1KRBi4VP4useke6qzIBZC63vszgH_GKjF-m9UYpsF9Q0/viewform" target="_blank" rel="noopener">
+          <div><div>العربية</div><div class="survey-link-lang">Arabic</div></div>
+          <span class="survey-link-arrow">&#8599;</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
 // ─── CONFIG ──────────────────────────────────────────────────────────────────
@@ -1102,6 +1264,36 @@ if (!USE_LOCAL){
 }
 
 init();
+
+// ─── MODALS ───────────────────────────────────────────────────────────────────
+function openModal(id){
+  document.getElementById(id).hidden = false;
+  document.body.style.overflow = "hidden";
+  hideMobileMenu();
+}
+function closeModal(id){
+  document.getElementById(id).hidden = true;
+  document.body.style.overflow = "";
+}
+function handleOverlayClick(e, id){
+  if (e.target.id === id) closeModal(id);
+}
+function toggleMobileMenu(){
+  const m = document.getElementById("mobile-menu");
+  m.hidden = !m.hidden;
+}
+function hideMobileMenu(){
+  const m = document.getElementById("mobile-menu");
+  if (m) m.hidden = true;
+}
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") ["about-modal","survey-modal"].forEach(closeModal);
+});
+document.addEventListener("click", e => {
+  const btn  = document.getElementById("hamburger-btn");
+  const menu = document.getElementById("mobile-menu");
+  if (menu && !menu.hidden && !menu.contains(e.target) && e.target !== btn) hideMobileMenu();
+});
 </script>
 </body>
 </html>
