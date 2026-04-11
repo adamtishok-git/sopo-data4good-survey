@@ -467,7 +467,7 @@ function parseCSVPositional(text) {
 
 // ─── FETCH ───────────────────────────────────────────────────────────────────
 async function fetchAll() {
-  const bust = IS_PREVIEW ? "" : ("&t="+Date.now());
+  const bust = USE_LOCAL ? "" : ("&t="+Date.now());
   const enResp = await fetch(SOURCES.en + bust);
   if (!enResp.ok) throw new Error("English CSV: HTTP "+enResp.status);
   const {headers:enH, rows:enRows} = parseCSVEn(await enResp.text());
