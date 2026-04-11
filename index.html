@@ -581,7 +581,7 @@ const LANG_LABEL = { en:"English", es:"Spanish", pt:"Portuguese", fr:"French", l
 let _rows = [], _headers = [];
 let gf = { lang:"all", role:"all" };
 let tf = {
-  parents:   { level:"all", needs:"all" },
+  parents:   { level:"all", needs:"all", children:"all" },
   educators: { band:"all",  role:"all", tenure:"all" },
 };
 let _voiceKey = null;
@@ -821,6 +821,15 @@ function applyTF(rows,tab){
           const has=v.includes("iep")||v.includes("504")||v.includes("esol")||v.includes("multilingual");
           if (f.needs==="yes"&&!has) return false;
           if (f.needs==="no" && has) return false;
+        }
+      }
+      if (f.children!=="all"){
+        const col=fcol("how many children")||fcol("number of children enrolled")||fcol("children do you have enrolled");
+        if (col){
+          const v=(r[col]||"").trim();
+          const n=parseInt(v,10);
+          if (f.children==="one"  &&!(n===1||v==="1")) return false;
+          if (f.children==="multi"&&!(n>=2||(!isNaN(n)&&n>1))) return false;
         }
       }
     }
@@ -1163,6 +1172,7 @@ function buildTF(tabId){
     const cfg=[
       {label:"School level", key:"level", opts:[["all","All"],["elementary","Elementary"],["middle","Middle"],["high","High School"]]},
       {label:"Additional needs", key:"needs", opts:[["all","All"],["yes","Has IEP / 504 / ESOL"],["no","No additional needs"]]},
+      {label:"Children enrolled", key:"children", opts:[["all","All"],["one","1 Child"],["multi","2+ Children"]]},
     ];
     cfg.forEach((g,gi)=>{
       if (gi>0){ const s=document.createElement("div"); s.style.cssText="width:1px;height:16px;background:var(--border);margin:0 4px"; bar.appendChild(s); }
