@@ -792,28 +792,29 @@ function pct(n,d){ return d?Math.round(n/d*100):0; }
 function desc(obj){ return Object.entries(obj).sort((a,b)=>b[1]-a[1]); }
 
 const SHORT={
-  // Trust options (full form text → concise label with short description)
-  "No trust — I don't believe this will be handled well":          "No trust — won't be handled well",
-  "Low trust — I have significant doubts based on what I've seen so far": "Low trust — significant doubts",
-  "Moderate trust — I'm cautiously optimistic but want to see follow-through": "Moderate trust — cautiously optimistic",
-  "High trust — I have confidence in the district's plan and leadership": "High trust — confident in plan",
+  // Trust options (exact form text → concise label)
+  "No trust — I don't believe this will be handled well":                    "No trust — won't be handled well",
+  "Low trust — I have significant doubts based on what I've seen so far":    "Low trust — significant doubts",
+  "Moderate trust — I'm cautiously optimistic but want to see follow-through":"Moderate trust — cautiously optimistic",
+  "High trust — I believe the district will manage this thoughtfully":        "High trust — will manage well",
   // Informed options
-  "Insufficient — I don't have enough to make concrete plans":     "Insufficient — can't plan yet",
-  "Partial — big picture clear but critical details missing":      "Partial — key details missing",
-  "Sufficient — I have what I need to plan":                      "Sufficient — can plan",
-  "I have received conflicting information":                       "Conflicting information",
+  "Insufficient — I don't have enough to make concrete plans":               "Insufficient — can't plan yet",
+  "Partial — the big picture is clear but critical details are missing":     "Partial — key details missing",
+  "Sufficient — I have what I need to plan":                                 "Sufficient — can plan",
+  "I have received conflicting information":                                 "Conflicting information",
   // Input options
-  "Yes — I've been able to share my perspective and felt heard":   "Yes — felt heard",
-  "Partially — I've had opportunities but don't feel input was incorporated": "Partially — not incorporated",
-  "No — I haven't had a real opportunity to provide input":        "No real opportunity",
-  "Chose not to engage":                                          "Chose not to engage",
-  "Not enough information to say":                                "Not enough info yet",
-  // Educator readiness options
-  "Prepared/confident":                                           "Prepared / confident",
-  "Mostly prepared but specific gaps remain":                     "Mostly prepared, gaps remain",
-  "Not prepared — significant gaps unaddressed":                  "Not prepared — significant gaps",
-  "Depends on which positions are retained":                      "Depends on positions retained",
-  "I don't know enough about the plan yet":                       "Don't know enough yet",
+  "Yes — I've been able to share my perspective and felt heard":             "Yes — felt heard",
+  "Partially — I've had opportunities but don't feel input was incorporated":"Partially — not incorporated",
+  "No — I haven't had a real opportunity to provide input":                  "No real opportunity",
+  "Chose not to engage":                                                     "Chose not to engage",
+  "Not enough information to say":                                           "Not enough info yet",
+  // Educator readiness options (exact form texts confirmed via translation map)
+  "Prepared — I feel confident":                                             "Prepared — feels confident",
+  "Mostly prepared, but specific gaps remain":                               "Mostly prepared, some gaps",
+  "Not prepared — significant gaps have not been addressed":                 "Not prepared — significant gaps",
+  "Depends on which positions are retained — can't assess without knowing my team": "Depends on team retained",
+  "I don't know enough about the plan yet":                                  "Don't know enough yet",
+  "I don't have enough information about the plan to assess this":           "Not enough info yet",
   // Child response options
   "Positive — curious or excited about something new":            "Positive — curious or excited",
   "Neutral — aware but not noticeably affected":                  "Neutral — not visibly affected",
@@ -848,11 +849,12 @@ const COLORS={
     "I chose not to engage":"#6B7280",
   },
   prepared:{
-    "Prepared/confident":"#057642",
-    "Mostly prepared but specific gaps remain":"#92400E",
-    "Not prepared — significant gaps unaddressed":"#8C1515",
+    "Prepared":"#057642",
+    "Mostly prepared":"#92400E",
+    "Not prepared":"#8C1515",
     "Depends on which positions are retained":"#6B7280",
     "I don't know enough about the plan yet":"#9CA3AF",
+    "I don't have enough information about the plan to assess this":"#9CA3AF",
   },
   confidence:{
     "Confident":"#057642","Somewhat confident":"#3B7A57",
@@ -869,7 +871,14 @@ const COLORS={
 };
 
 function scoreCls(p){ return p>=60?"good":p>=35?"warn":"bad"; }
-function palColor(pal,lbl){ return (pal&&pal[lbl])||"#6B7280"; }
+function palColor(pal,lbl){
+  if (!pal) return "#6B7280";
+  if (pal[lbl]) return pal[lbl];
+  // Prefix match: try the text before the em-dash so short COLORS keys
+  // work against full option texts like "High trust — I believe..."
+  const prefix=lbl.split(/\s*[—–]\s*/)[0].trim();
+  return (prefix!==lbl && pal[prefix]) || "#6B7280";
+}
 
 // ─── TEST / DUMMY MODE ────────────────────────────────────────────────────────
 function getEmailCol(){
@@ -1171,7 +1180,7 @@ function renderEducators(rows){
   const sg=document.createElement("div"); sg.className="stat-grid"; el.appendChild(sg);
   [
     mkStatCard("Feeling Prepared",rows,"prepared do you currently feel to serve students effectively",
-      ["Prepared/confident"],COLORS.prepared,"feel prepared to serve students in the new configuration"),
+      ["Prepared"],COLORS.prepared,"feel prepared to serve students in the new configuration"),
     mkStatCard("District Trust",rows,"trust the district to carry out this transition",
       ["High trust","Moderate trust"],COLORS.trust,"trust the district"),
     mkStatCard("Feeling Informed",rows,"amount of information the district has provided",
