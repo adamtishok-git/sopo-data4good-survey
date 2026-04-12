@@ -1254,11 +1254,11 @@ function renderEducators(rows){
   const sg=document.createElement("div"); sg.className="stat-grid"; el.appendChild(sg);
   [
     mkStatCard("Feeling Prepared",rows,"prepared do you currently feel to serve students effectively",
-      ["Prepared"],COLORS.prepared,"feel prepared to serve students in the new configuration"),
+      ["Prepared","Mostly prepared"],COLORS.prepared,"feel prepared to serve students in the new configuration"),
     mkStatCard("District Trust",rows,"trust the district to carry out this transition",
       ["High trust","Moderate trust"],COLORS.trust,"trust the district"),
     mkStatCard("Feeling Informed",rows,"amount of information the district has provided",
-      ["Sufficient"],COLORS.info,"feel fully informed"),
+      ["Sufficient"],COLORS.info,"feel sufficiently informed"),
     mkStatCard("Meaningful Input",rows,"meaningful opportunity to provide input",
       ["Yes — shared perspective and felt heard"],COLORS.input,"felt heard in this process"),
   ].forEach(c=>{ if(c) sg.appendChild(c); });
