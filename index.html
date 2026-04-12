@@ -1070,6 +1070,39 @@ function mkRanked(title, descText, rows, colSubs, type="multi", max=8){
 
 function append(el, node){ if (node) el.appendChild(node); }
 
+// Sub-section label (small-caps red, like modal section headers)
+function mkSubLabel(text){
+  const d=document.createElement("p");
+  d.style.cssText="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--red);margin:18px 0 4px";
+  d.textContent=text;
+  return d;
+}
+
+// Same visual as mkRanked but from a pre-computed {label:count} object.
+// total = respondent count used for the % calculation.
+function mkRankedFromCounts(title, descText, counts, total){
+  const entries=desc(counts).filter(([,n])=>n>0);
+  if (!entries.length) return null;
+  const top=entries[0][1];
+  const wrap=document.createElement("div"); wrap.className="rank-block";
+  wrap.innerHTML=`<div class="rank-block-title">${title}</div>${descText?`<div class="rank-block-desc">${descText}</div>`:""}`;
+  const list=document.createElement("div"); list.className="rank-list";
+  entries.forEach(([lbl,n],i)=>{
+    const p=pct(n,total);
+    const w=top?Math.round(n/top*100):0;
+    const item=document.createElement("div"); item.className="rank-item";
+    item.innerHTML=`
+      <div class="rank-row">
+        <span class="rank-label">${lbl}</span>
+        <span class="rank-pct">${p}%</span>
+      </div>
+      <div class="rank-track"><div class="rank-fill${i>0?' dim':''}" style="width:${w}%"></div></div>`;
+    list.appendChild(item);
+  });
+  wrap.appendChild(list);
+  return wrap;
+}
+
 // ─── RENDER OVERVIEW ─────────────────────────────────────────────────────────
 function renderOverview(rows){
   const el=document.getElementById("ov-body"); el.innerHTML="";
@@ -1097,6 +1130,79 @@ function renderOverview(rows){
     c.innerHTML=`<div class="who-n">${n}</div><div class="who-label">${RLABEL[role]}</div><div class="who-pct">${pct(n,rows.length)}% of responses</div>`;
     wg.appendChild(c);
   });
+
+  // ── Community Representation ──────────────────────────────────────────────
+  append(el, mkHead("Community Representation","A closer look at who is participating"));
+
+  // Parents
+  const pRows=parents(rows);
+  if(pRows.length){
+    el.appendChild(mkSubLabel(`Parents & Families — ${pRows.length} response${pRows.length!==1?"s":""}`));
+
+    append(el, mkRanked("Which school(s) are your children currently enrolled in?",
+      "Select all that apply",
+      pRows,["children currently enrolled"],"multi",8));
+
+    append(el, mkRanked("How many children will you have in the district in 2026–27?",null,
+      pRows,["how many children","number of children enrolled","children do you have enrolled"],"single",6));
+
+    // Additional support — grouped into 4 buckets
+    const supCols=fcolsAll("additional educational");
+    if(supCols.length){
+      const sup={"No additional support":0,"IEP":0,"504 plan":0,"ESOL/MLL":0};
+      pRows.forEach(r=>{
+        let raw=""; for(const c of supCols){raw=(r[c]||"").trim();if(raw)break;}
+        if(!raw) return;
+        const opts=splitMulti(raw).map(v=>norm(v).toLowerCase());
+        let hasIEP=false,has504=false,hasESOL=false,hasNone=false;
+        opts.forEach(o=>{
+          if(o.includes("iep"))                          hasIEP=true;
+          if(o.includes("504"))                          has504=true;
+          if(o.includes("esol")||o.includes("multilingual")) hasESOL=true;
+          if(o.includes("none")||o.includes("general ed"))   hasNone=true;
+        });
+        if(hasIEP)  sup["IEP"]++;
+        if(has504)  sup["504 plan"]++;
+        if(hasESOL) sup["ESOL/MLL"]++;
+        if(hasNone||(!hasIEP&&!has504&&!hasESOL)) sup["No additional support"]++;
+      });
+      append(el, mkRankedFromCounts(
+        "Do any of your children require additional educational support?",
+        "Select all that apply — a family may appear in multiple categories",
+        sup, pRows.length));
+    }
+  }
+
+  // Educators
+  const eRows=educators(rows);
+  if(eRows.length){
+    el.appendChild(mkSubLabel(`Educators & Staff — ${eRows.length} response${eRows.length!==1?"s":""}`));
+
+    // Grade bands — raw mkRanked (options already use Elementary/Middle/High labels)
+    append(el, mkRanked("Which grade bands do you primarily work with?",
+      "Select all that apply — totals may exceed educator count",
+      eRows,["grade bands do you primarily work with"],"multi",5));
+
+    // Roles — grouped to match the filter abstraction
+    const roleCol=fcol("Section 3 Educator: Your Role");
+    if(roleCol){
+      const rg={"Classroom":0,"SpEd & MLL":0,"Admin & Support":0};
+      eRows.forEach(r=>{
+        splitMulti(r[roleCol]||"").map(v=>norm(v).toLowerCase()).forEach(o=>{
+          if(o.includes("classroom")||o.includes("related arts")||o.includes("specialist")||o.includes("middle or high school teacher"))
+            rg["Classroom"]++;
+          else if(o.includes("special ed")||o.includes("esol")||o.includes("multilingual")||o.includes("occupational")||o.includes("ed tech")||o.includes("technician")||o.includes("counselor")||o.includes("social worker"))
+            rg["SpEd & MLL"]++;
+          else if(o.includes("administrator")||o.includes("coach")||o.includes("support staff"))
+            rg["Admin & Support"]++;
+        });
+      });
+      append(el, mkRankedFromCounts(
+        "What is your role?",
+        "Select all that apply — educators may appear in multiple categories",
+        rg, eRows.length));
+    }
+  }
 
   const langC={};
   rows.forEach(r=>{ const l=r._lang||"en"; langC[l]=(langC[l]||0)+1; });
