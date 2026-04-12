@@ -891,7 +891,13 @@ function palColor(pal,lbl){
   return (prefix!==lbl && pal[prefix]) || "#6B7280";
 }
 
-// ─── DUMMY MODE ──────────────────────────────────────────────────────────────
+// ─── TEST ROW FILTER ─────────────────────────────────────────────────────────
+// The last column is an optional email field. Test submissions have "test" there.
+// Checking only the last header's value keeps this safe for free-form answers.
+function isTestRow(row){
+  const emailCol = _headers[_headers.length-1];
+  return emailCol && (row[emailCol]||"").trim().toLowerCase().includes("test");
+}
 
 // ─── FILTERING ───────────────────────────────────────────────────────────────
 function applyGlobal(rows){
@@ -1459,7 +1465,7 @@ function buildTF(tabId){
 
 // ─── REFRESH ─────────────────────────────────────────────────────────────────
 function refreshTab(tabId){
-  const filtered=applyGlobal(_rows);
+  const filtered=applyGlobal(_rows.filter(r=>!isTestRow(r)));
   if (tabId==="overview"){ renderOverview(filtered); return; }
   if (tabId==="voices")  { renderVoices(filtered);   return; }
   if (tabId==="community"){
@@ -1562,7 +1568,7 @@ async function init(){
   try {
     const {headers,rows}=await fetchAll();
     _headers=headers; _rows=rows;
-    document.getElementById("total-n").textContent=rows.length||"—";
+    document.getElementById("total-n").textContent=rows.filter(r=>!isTestRow(r)).length||"—";
     buildLangPills(rows);
     refreshAll();
     document.getElementById("status-bar").style.display="none";
@@ -1577,7 +1583,7 @@ if (!USE_LOCAL){
     try {
       const {headers,rows}=await fetchAll();
       _headers=headers; _rows=rows;
-      document.getElementById("total-n").textContent=rows.length||"—";
+      document.getElementById("total-n").textContent=rows.filter(r=>!isTestRow(r)).length||"—";
       buildLangPills(rows);
       refreshAll();
     } catch(e){ console.warn("Refresh failed",e); }
