@@ -170,7 +170,7 @@
     .bd-row { display: flex; align-items: center; gap: 6px; }
     .bd-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
     .bd-label {
-      font-size: 0.7rem; color: var(--text-2); flex: 1;
+      font-size: 0.7rem; color: var(--text-2); flex: 1; min-width: 0;
       overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     }
     .bd-pct { font-size: 0.7rem; font-weight: 700; color: var(--text); flex-shrink: 0; }
@@ -792,26 +792,43 @@ function pct(n,d){ return d?Math.round(n/d*100):0; }
 function desc(obj){ return Object.entries(obj).sort((a,b)=>b[1]-a[1]); }
 
 const SHORT={
-  "Partial — big picture clear but critical details missing":"Partial — key details missing",
-  "Yes — shared perspective and felt heard":"Felt heard",
-  "Partially — had opportunities but don't feel input was incorporated":"Had chances, not incorporated",
-  "No — haven't had a real opportunity":"No real opportunity",
-  "I chose not to engage":"Chose not to engage",
-  "I have received conflicting information":"Conflicting information",
-  "Not enough information to say":"Not enough info yet",
-  "Prepared/confident":"Prepared / confident",
-  "Mostly prepared but specific gaps remain":"Mostly prepared, gaps remain",
-  "Not prepared — significant gaps unaddressed":"Not prepared — significant gaps",
-  "Depends on which positions are retained":"Depends on positions retained",
-  "I don't know enough about the plan yet":"Don't know enough yet",
-  "Positive — curious or excited about something new":"Positive — curious or excited",
-  "Neutral — aware but not noticeably affected":"Neutral — not visibly affected",
-  "Negative — noticeably anxious or distressed":"Negative — anxious or distressed",
-  "Too young to understand yet":"Too young to understand",
-  "Our child(ren) is unaware":"Child is unaware",
-  "Varies day to day":"Varies day to day",
+  // Trust options (full form text → concise label with short description)
+  "No trust — I don't believe this will be handled well":          "No trust — won't be handled well",
+  "Low trust — I have significant doubts based on what I've seen so far": "Low trust — significant doubts",
+  "Moderate trust — I'm cautiously optimistic but want to see follow-through": "Moderate trust — cautiously optimistic",
+  "High trust — I have confidence in the district's plan and leadership": "High trust — confident in plan",
+  // Informed options
+  "Insufficient — I don't have enough to make concrete plans":     "Insufficient — can't plan yet",
+  "Partial — big picture clear but critical details missing":      "Partial — key details missing",
+  "Sufficient — I have what I need to plan":                      "Sufficient — can plan",
+  "I have received conflicting information":                       "Conflicting information",
+  // Input options
+  "Yes — I've been able to share my perspective and felt heard":   "Yes — felt heard",
+  "Partially — I've had opportunities but don't feel input was incorporated": "Partially — not incorporated",
+  "No — I haven't had a real opportunity to provide input":        "No real opportunity",
+  "Chose not to engage":                                          "Chose not to engage",
+  "Not enough information to say":                                "Not enough info yet",
+  // Educator readiness options
+  "Prepared/confident":                                           "Prepared / confident",
+  "Mostly prepared but specific gaps remain":                     "Mostly prepared, gaps remain",
+  "Not prepared — significant gaps unaddressed":                  "Not prepared — significant gaps",
+  "Depends on which positions are retained":                      "Depends on positions retained",
+  "I don't know enough about the plan yet":                       "Don't know enough yet",
+  // Child response options
+  "Positive — curious or excited about something new":            "Positive — curious or excited",
+  "Neutral — aware but not noticeably affected":                  "Neutral — not visibly affected",
+  "Negative — noticeably anxious or distressed":                  "Negative — anxious or distressed",
+  "Too young to understand yet":                                  "Too young to understand",
+  "Our child(ren) is unaware":                                    "Child is unaware",
+  "Varies day to day":                                            "Varies day to day",
 };
-function sh(s){ return SHORT[s]||s; }
+// Return a display-safe short label. Exact SHORT match wins; otherwise strip
+// everything after the em-dash (keeps the key phrase, drops the long description).
+function sh(s){
+  if (SHORT[s]) return SHORT[s];
+  const em=s.indexOf(" — ");
+  return em>0 ? s.slice(0,em) : s;
+}
 
 const COLORS={
   trust:{
