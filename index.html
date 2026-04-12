@@ -626,6 +626,7 @@ function parseCSVEn(text) {
     const vals=parseRow(lines[i]);
     const obj={};
     headers.forEach((h,idx)=>{ obj[h]=(vals[idx]||"").trim(); });
+    obj._lastVal = (vals[vals.length-1]||"").trim();
     rows.push(obj);
   }
   return {headers,rows};
@@ -699,6 +700,7 @@ async function fetchAll() {
           // the email field if the translated form has extra questions that shift positions.
           // Named "xoverflow" (no "_" prefix) so the test-row fallback scan finds them.
           vals.slice(enH.length).forEach((v,i)=>{ obj["xoverflow"+i]=v||""; });
+          obj._lastVal = (vals[vals.length-1]||"").trim();
           obj._lang=lang;
           obj._colCount=sampleCols;  // attach for diagnostics
           allRows.push(obj);
@@ -885,28 +887,10 @@ function palColor(pal,lbl){
 }
 
 // ─── TEST / DUMMY MODE ────────────────────────────────────────────────────────
-function getEmailCol(){
-  return _headers.find(h=>h.toLowerCase().includes("email"))
-    || _headers[_headers.length-1]
-    || null;
-}
-function looksLikeTest(v){
-  const vl=(v||"").trim().toLowerCase();
-  // "test" alone, or an email address whose local part contains "test"
-  return vl==="test" || (vl.includes("@") && vl.split("@")[0].includes("test"));
-}
 function isTestRow(row){
-  const col=getEmailCol();
-  // Primary: email column — uses includes() so "test@...", "test.foo@..." all match
-  if (col && (row[col]||"").trim().toLowerCase().includes("test")) return true;
-  // Fallback for multilingual rows: positional mapping may shift or drop the email
-  // column, so scan every non-"_"-prefixed field (including xoverflow* columns).
-  if ((row._lang||"en")!=="en"){
-    return Object.entries(row)
-      .filter(([k])=>!k.startsWith("_"))
-      .some(([,v])=>looksLikeTest(v));
-  }
-  return false;
+  // The last question asks respondents to optionally enter their email.
+  // Test submissions have "test" in that field (_lastVal = last raw column).
+  return (row._lastVal||"").toLowerCase().includes("test");
 }
 function applyMode(rows){
   if (IS_TEST)  return rows.filter(r=> isTestRow(r));
