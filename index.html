@@ -888,17 +888,12 @@ function palColor(pal,lbl){
 
 // ─── TEST / DUMMY MODE ────────────────────────────────────────────────────────
 function isTestRow(row){
-  // Primary: last raw column value (email field) contains "test"
-  if ((row._lastVal||"").toLowerCase().includes("test")) return true;
-  // Safety net: any non-metadata field is exactly "test" (case-insensitive)
-  // or is a test-email address — catches rows where trailing-empty-cell
-  // stripping shifts the last-column index away from the email field.
+  // Test submissions have "test" in the optional email field (last question).
+  // No real survey option text contains the word "test", so includes("test")
+  // across all fields is safe — checked against translation_map.json, zero hits.
   return Object.entries(row)
     .filter(([k])=>!k.startsWith("_"))
-    .some(([,v])=>{
-      const vl=(v||"").trim().toLowerCase();
-      return vl==="test" || (vl.includes("@") && vl.split("@")[0].includes("test"));
-    });
+    .some(([,v])=>(v||"").trim().toLowerCase().includes("test"));
 }
 function applyMode(rows){
   if (IS_TEST)  return rows.filter(r=> isTestRow(r));
