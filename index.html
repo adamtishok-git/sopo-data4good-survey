@@ -1038,12 +1038,17 @@ function mkStatCard(label, rows, colSub, posKeys, palette, descText, type="singl
   return card;
 }
 
-function mkRanked(title, descText, rows, colSubs, type="multi", max=8){
+function mkRanked(title, descText, rows, colSubs, type="multi", max=8, filterToKnown=false){
   // Always use fcolsAll so Section 5 copies (answered by community/all) are included.
   const cols=[...new Set(([].concat(colSubs)).flatMap(s=>fcolsAll(s)))];
   if (!cols.length) return null;
   const cnts=countV(rows,cols,type);
-  const entries=desc(cnts).slice(0,max);
+  let allEntries=desc(cnts);
+  if(filterToKnown && _knownOpts.length){
+    const ks=new Set(_knownOpts);
+    allEntries=allEntries.filter(([lbl])=>ks.has(lbl));
+  }
+  const entries=allEntries.slice(0,max);
   if (!entries.length) return null;
   const total=rows.length;
 
@@ -1236,7 +1241,7 @@ function renderParents(rows){
     "% of parents who selected each · respondents could choose up to 4"));
   append(el, mkRanked(
     "Factors that matter most in school assignment decisions",null,
-    rows,["factors matter most to your family in how your child"],"multi",Infinity));
+    rows,["factors matter most to your family in how your child"],"multi",Infinity,true));
   append(el, mkRanked(
     "What success looks like — outcomes parents are watching",
     "How parents will know if this transition worked",
