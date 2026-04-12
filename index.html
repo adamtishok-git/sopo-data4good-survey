@@ -610,6 +610,27 @@ let tf = {
 let _voiceKey = null;
 
 // ─── CSV ─────────────────────────────────────────────────────────────────────
+// Split CSV text into logical lines, respecting quoted fields that contain
+// embedded newlines (e.g. respondents pressing Enter in a free-text answer).
+function splitCSVLines(text){
+  const lines=[]; let cur="", q=false;
+  for(let i=0;i<text.length;i++){
+    const c=text[i];
+    if(c==='"'){
+      if(q&&text[i+1]==='"'){cur+='""';i++;} // escaped quote
+      else{q=!q;cur+=c;}
+    } else if(!q&&c==='\r'&&text[i+1]==='\n'){
+      lines.push(cur);cur="";i++;
+    } else if(!q&&(c==='\n'||c==='\r')){
+      lines.push(cur);cur="";
+    } else {
+      cur+=c;
+    }
+  }
+  if(cur.trim())lines.push(cur);
+  return lines;
+}
+
 function parseRow(line) {
   const r=[]; let cur="", q=false;
   for (let i=0;i<line.length;i++) {
@@ -623,7 +644,7 @@ function parseRow(line) {
 }
 
 function parseCSVEn(text) {
-  const lines = text.split(/\r?\n/);
+  const lines = splitCSVLines(text);
   if (lines.length < 2) return { headers:[], rows:[] };
   const seen={};
   const headers = parseRow(lines[0]).map(h=>{
@@ -643,7 +664,7 @@ function parseCSVEn(text) {
 }
 
 function parseCSVPositional(text) {
-  const lines = text.split(/\r?\n/);
+  const lines = splitCSVLines(text);
   if (lines.length < 2) return [];
   const rows=[];
   for (let i=1;i<lines.length;i++){
@@ -889,14 +910,6 @@ function palColor(pal,lbl){
   // work against full option texts like "High trust — I believe..."
   const prefix=lbl.split(/\s*[—–]\s*/)[0].trim();
   return (prefix!==lbl && pal[prefix]) || "#6B7280";
-}
-
-// ─── TEST ROW FILTER ─────────────────────────────────────────────────────────
-// The last column is an optional email field. Test submissions have "test" there.
-// Checking only the last header's value keeps this safe for free-form answers.
-function isTestRow(row){
-  const emailCol = _headers[_headers.length-1];
-  return emailCol && (row[emailCol]||"").trim().toLowerCase().includes("test");
 }
 
 // ─── FILTERING ───────────────────────────────────────────────────────────────
@@ -1465,7 +1478,7 @@ function buildTF(tabId){
 
 // ─── REFRESH ─────────────────────────────────────────────────────────────────
 function refreshTab(tabId){
-  const filtered=applyGlobal(_rows.filter(r=>!isTestRow(r)));
+  const filtered=applyGlobal(_rows);
   if (tabId==="overview"){ renderOverview(filtered); return; }
   if (tabId==="voices")  { renderVoices(filtered);   return; }
   if (tabId==="community"){
@@ -1568,7 +1581,7 @@ async function init(){
   try {
     const {headers,rows}=await fetchAll();
     _headers=headers; _rows=rows;
-    document.getElementById("total-n").textContent=rows.filter(r=>!isTestRow(r)).length||"—";
+    document.getElementById("total-n").textContent=rows.length||"—";
     buildLangPills(rows);
     refreshAll();
     document.getElementById("status-bar").style.display="none";
@@ -1583,7 +1596,7 @@ if (!USE_LOCAL){
     try {
       const {headers,rows}=await fetchAll();
       _headers=headers; _rows=rows;
-      document.getElementById("total-n").textContent=rows.filter(r=>!isTestRow(r)).length||"—";
+      document.getElementById("total-n").textContent=rows.length||"—";
       buildLangPills(rows);
       refreshAll();
     } catch(e){ console.warn("Refresh failed",e); }
