@@ -1047,21 +1047,19 @@ function mkRanked(title, descText, rows, colSubs, type="multi", max=8){
   const entries=desc(cnts).slice(0,max);
   if (!entries.length) return null;
   const total=rows.length;
-  const top=entries[0][1];
 
   const wrap=document.createElement("div"); wrap.className="rank-block";
   wrap.innerHTML=`<div class="rank-block-title">${title}</div>${descText?`<div class="rank-block-desc">${descText}</div>`:""}`;
   const list=document.createElement("div"); list.className="rank-list";
   entries.forEach(([lbl,n],i)=>{
     const p=pct(n,total);
-    const w=top?Math.round(n/top*100):0;
     const item=document.createElement("div"); item.className="rank-item";
     item.innerHTML=`
       <div class="rank-row">
         <span class="rank-label">${lbl}</span>
         <span class="rank-pct">${p}%</span>
       </div>
-      <div class="rank-track"><div class="rank-fill${i>0?' dim':''}" style="width:${w}%"></div></div>`;
+      <div class="rank-track"><div class="rank-fill${i>0?' dim':''}" style="width:${p}%"></div></div>`;
     list.appendChild(item);
   });
   wrap.appendChild(list);
@@ -1083,20 +1081,18 @@ function mkSubLabel(text){
 function mkRankedFromCounts(title, descText, counts, total){
   const entries=desc(counts).filter(([,n])=>n>0);
   if (!entries.length) return null;
-  const top=entries[0][1];
   const wrap=document.createElement("div"); wrap.className="rank-block";
   wrap.innerHTML=`<div class="rank-block-title">${title}</div>${descText?`<div class="rank-block-desc">${descText}</div>`:""}`;
   const list=document.createElement("div"); list.className="rank-list";
   entries.forEach(([lbl,n],i)=>{
     const p=pct(n,total);
-    const w=top?Math.round(n/top*100):0;
     const item=document.createElement("div"); item.className="rank-item";
     item.innerHTML=`
       <div class="rank-row">
         <span class="rank-label">${lbl}</span>
         <span class="rank-pct">${p}%</span>
       </div>
-      <div class="rank-track"><div class="rank-fill${i>0?' dim':''}" style="width:${w}%"></div></div>`;
+      <div class="rank-track"><div class="rank-fill${i>0?' dim':''}" style="width:${p}%"></div></div>`;
     list.appendChild(item);
   });
   wrap.appendChild(list);
