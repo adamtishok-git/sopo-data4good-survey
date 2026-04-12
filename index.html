@@ -570,7 +570,6 @@
 const _params    = new URLSearchParams(location.search);
 const IS_PREVIEW = _params.has("preview");
 const IS_DUMMY   = _params.has("dummydata");
-const IS_TEST    = _params.has("test");
 const USE_LOCAL  = IS_PREVIEW || IS_DUMMY;
 const REFRESH_MS = 5 * 60 * 1000;
 
@@ -626,7 +625,6 @@ function parseCSVEn(text) {
     const vals=parseRow(lines[i]);
     const obj={};
     headers.forEach((h,idx)=>{ obj[h]=(vals[idx]||"").trim(); });
-    obj._lastVal = (vals[vals.length-1]||"").trim();
     rows.push(obj);
   }
   return {headers,rows};
@@ -696,11 +694,6 @@ async function fetchAll() {
         parsed.forEach(vals=>{
           const obj={};
           enH.forEach((h,idx)=>{ obj[h]=(vals[idx]||""); });
-          // Capture any columns beyond the English header count — these can contain
-          // the email field if the translated form has extra questions that shift positions.
-          // Named "xoverflow" (no "_" prefix) so the test-row fallback scan finds them.
-          vals.slice(enH.length).forEach((v,i)=>{ obj["xoverflow"+i]=v||""; });
-          obj._lastVal = (vals[vals.length-1]||"").trim();
           obj._lang=lang;
           obj._colCount=sampleCols;  // attach for diagnostics
           allRows.push(obj);
@@ -886,19 +879,7 @@ function palColor(pal,lbl){
   return (prefix!==lbl && pal[prefix]) || "#6B7280";
 }
 
-// ─── TEST / DUMMY MODE ────────────────────────────────────────────────────────
-function isTestRow(row){
-  // Test submissions have "test" in the optional email field (last question).
-  // No real survey option text contains the word "test", so includes("test")
-  // across all fields is safe — checked against translation_map.json, zero hits.
-  return Object.entries(row)
-    .filter(([k])=>!k.startsWith("_"))
-    .some(([,v])=>(v||"").trim().toLowerCase().includes("test"));
-}
-function applyMode(rows){
-  if (IS_TEST)  return rows.filter(r=> isTestRow(r));
-  return rows.filter(r=>!isTestRow(r));
-}
+// ─── DUMMY MODE ──────────────────────────────────────────────────────────────
 
 // ─── FILTERING ───────────────────────────────────────────────────────────────
 function applyGlobal(rows){
@@ -1466,7 +1447,7 @@ function buildTF(tabId){
 
 // ─── REFRESH ─────────────────────────────────────────────────────────────────
 function refreshTab(tabId){
-  const filtered=applyGlobal(applyMode(_rows));
+  const filtered=applyGlobal(_rows);
   if (tabId==="overview"){ renderOverview(filtered); return; }
   if (tabId==="voices")  { renderVoices(filtered);   return; }
   if (tabId==="community"){
@@ -1495,28 +1476,12 @@ function refreshTab(tabId){
 }
 
 function refreshAll(){
-  const modeRows = applyMode(_rows);
-  const filtered  = applyGlobal(modeRows);
+  const filtered  = applyGlobal(_rows);
   document.getElementById("cnt-parent").textContent    = parents(filtered).length;
   document.getElementById("cnt-educator").textContent  = educators(filtered).length;
   ["overview","parents","educators","community","voices"].forEach(refreshTab);
   ["parents","educators"].forEach(buildTF);
 
-  // In test mode, show a per-source diagnostic: loaded rows, detected test rows,
-  // column count warnings, and fetch errors — all visible without DevTools.
-  if (IS_TEST){
-    const testByLang={};
-    modeRows.forEach(r=>{ const l=r._lang||"en"; testByLang[l]=(testByLang[l]||0)+1; });
-    const srcInfo=_pipelineLog.map(e=>{
-      const name=LANG_LABEL[e.lang]||e.lang;
-      if (e.status!=="ok") return `${name}:✗${e.error||e.status}`;
-      const det=testByLang[e.lang]||0;
-      const colWarn=(e.cols&&e.cols!==e.enCols)?` ⚠${e.cols}cols`:"";
-      return `${name}:${det}/${e.total}${colWarn}`;
-    }).join("  ·  ");
-    const mb=document.getElementById("mode-banner");
-    mb.textContent=`⚠ TEST MODE — ${modeRows.length} test rows  |  ${srcInfo}`;
-  }
 }
 
 // ─── GLOBAL FILTERS ──────────────────────────────────────────────────────────
@@ -1555,10 +1520,7 @@ function showStatus(msg,type){
 async function init(){
   // Mode banner
   const mb=document.getElementById("mode-banner");
-  if (IS_TEST){
-    mb.style.cssText="display:block;padding:6px 20px;font-size:0.72rem;font-weight:600;text-align:center;background:#FEF3C7;color:#92400E;border-bottom:1px solid #F5D98F";
-    mb.textContent="⚠ TEST MODE — showing only test responses";
-  } else if (IS_DUMMY){
+  if (IS_DUMMY){
     mb.style.cssText="display:block;padding:6px 20px;font-size:0.72rem;font-weight:600;text-align:center;background:#EEF2FF;color:#4338CA;border-bottom:1px solid #C7D2FE";
     mb.textContent="DUMMY DATA — simulated responses only";
   }
@@ -1573,8 +1535,7 @@ async function init(){
   try {
     const {headers,rows}=await fetchAll();
     _headers=headers; _rows=rows;
-    const visRows=applyMode(rows);
-    document.getElementById("total-n").textContent=visRows.length||"—";
+    document.getElementById("total-n").textContent=rows.length||"—";
     buildLangPills(rows);
     refreshAll();
     document.getElementById("status-bar").style.display="none";
@@ -1589,7 +1550,7 @@ if (!USE_LOCAL){
     try {
       const {headers,rows}=await fetchAll();
       _headers=headers; _rows=rows;
-      document.getElementById("total-n").textContent=applyMode(rows).length||"—";
+      document.getElementById("total-n").textContent=rows.length||"—";
       buildLangPills(rows);
       refreshAll();
     } catch(e){ console.warn("Refresh failed",e); }
