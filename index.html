@@ -288,6 +288,16 @@
     .hdr-mobile-menu .hdr-btn { width: 100%; text-align: center; }
     .hdr-meta { font-size: 0.73rem; color: var(--text-3); margin-top: 5px; }
     .hdr-meta strong { color: var(--red); font-weight: 700; }
+    .status-pill {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 0.68rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
+      padding: 2px 8px 2px 6px; border-radius: 99px; vertical-align: middle; margin-right: 7px;
+    }
+    .status-pill.open  { background: #DCFCE7; color: #15803D; }
+    .status-pill.closed{ background: #F3F4F6; color: #6B7280; }
+    .status-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+    .status-pill.open .status-dot { animation: sdpulse 1.8s ease-in-out infinite; }
+    @keyframes sdpulse { 0%,100%{opacity:1} 50%{opacity:.2} }
 
     /* ── MODAL ── */
     .modal-overlay {
@@ -411,19 +421,19 @@
       <div class="hdr-eyebrow">Community-Led · South Portland Public Schools</div>
       <h1>Community Impact Survey</h1>
       <p class="hdr-sub">Live results from families, educators, and community members on the proposed school reconfiguration.</p>
-      <p class="hdr-meta"><strong id="total-n">—</strong> responses</p>
+      <p class="hdr-meta"><span id="survey-status-pill"></span><strong id="total-n">—</strong> responses</p>
     </div>
     <!-- Desktop action buttons -->
     <div class="hdr-actions">
       <button class="hdr-btn hdr-btn-ghost" onclick="openModal('about-modal')">About</button>
-      <button class="hdr-btn hdr-btn-solid" onclick="openModal('survey-modal')">Take the Survey</button>
+      <button class="hdr-btn hdr-btn-solid take-survey-btn" onclick="openModal('survey-modal')">Take the Survey</button>
     </div>
     <!-- Mobile hamburger -->
     <div class="hdr-hamburger">
       <button class="hdr-btn hdr-btn-ghost" id="hamburger-btn" onclick="toggleMobileMenu()">&#9776;</button>
       <div class="hdr-mobile-menu" id="mobile-menu" hidden>
         <button class="hdr-btn hdr-btn-ghost" onclick="openModal('about-modal');hideMobileMenu()">About</button>
-        <button class="hdr-btn hdr-btn-solid" onclick="openModal('survey-modal');hideMobileMenu()">Take the Survey</button>
+        <button class="hdr-btn hdr-btn-solid take-survey-btn" onclick="openModal('survey-modal');hideMobileMenu()">Take the Survey</button>
       </div>
     </div>
   </div>
@@ -572,6 +582,7 @@ const IS_PREVIEW = _params.has("preview");
 const IS_DUMMY   = _params.has("dummydata");
 const USE_LOCAL  = IS_PREVIEW || IS_DUMMY;
 const REFRESH_MS = 5 * 60 * 1000;
+const SURVEY_OPEN = true; // ← set to false when the survey period ends
 
 const SOURCES = {
   en: USE_LOCAL ? "simulated_responses.csv"
@@ -1518,6 +1529,17 @@ function showStatus(msg,type){
 
 // ─── BOOT ────────────────────────────────────────────────────────────────────
 async function init(){
+  // Survey status pill
+  const sp=document.getElementById("survey-status-pill");
+  if (SURVEY_OPEN){
+    sp.className="status-pill open";
+    sp.innerHTML='<span class="status-dot"></span> Collecting responses &nbsp;·&nbsp; ';
+  } else {
+    sp.className="status-pill closed";
+    sp.innerHTML='<span class="status-dot"></span> Survey closed &nbsp;·&nbsp; ';
+    document.querySelectorAll(".take-survey-btn").forEach(b=>b.hidden=true);
+  }
+
   // Mode banner
   const mb=document.getElementById("mode-banner");
   if (IS_DUMMY){
