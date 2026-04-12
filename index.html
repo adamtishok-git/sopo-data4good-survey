@@ -581,6 +581,7 @@ const _params    = new URLSearchParams(location.search);
 const IS_PREVIEW = _params.has("preview");
 const IS_DUMMY   = _params.has("dummydata");
 const USE_LOCAL  = IS_PREVIEW || IS_DUMMY;
+const IS_DIAG    = _params.has("diag");
 const REFRESH_MS = 5 * 60 * 1000;
 const SURVEY_OPEN = true; // ← set to false when the survey period ends
 
@@ -1492,7 +1493,11 @@ function refreshAll(){
   document.getElementById("cnt-educator").textContent  = educators(filtered).length;
   ["overview","parents","educators","community","voices"].forEach(refreshTab);
   ["parents","educators"].forEach(buildTF);
-
+  if (IS_DIAG){
+    const mb=document.getElementById("mode-banner");
+    mb.style.cssText="display:block;padding:6px 20px;font-size:0.72rem;font-weight:600;text-align:center;background:#FEF9C3;color:#713F12;border-bottom:1px solid #FDE68A";
+    mb.textContent="SOURCE COUNTS: "+_pipelineLog.map(e=>e.lang.toUpperCase()+(e.status==="ok"?":"+e.total:"✗")).join("  |  ");
+  }
 }
 
 // ─── GLOBAL FILTERS ──────────────────────────────────────────────────────────
