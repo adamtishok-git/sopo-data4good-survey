@@ -691,6 +691,10 @@ async function fetchAll() {
         parsed.forEach(vals=>{
           const obj={};
           enH.forEach((h,idx)=>{ obj[h]=(vals[idx]||""); });
+          // Capture any columns beyond the English header count — these can contain
+          // the email field if the translated form has extra questions that shift positions.
+          // Named "xoverflow" (no "_" prefix) so the test-row fallback scan finds them.
+          vals.slice(enH.length).forEach((v,i)=>{ obj["xoverflow"+i]=v||""; });
           obj._lang=lang;
           obj._colCount=sampleCols;  // attach for diagnostics
           allRows.push(obj);
@@ -856,16 +860,21 @@ function getEmailCol(){
     || _headers[_headers.length-1]
     || null;
 }
+function looksLikeTest(v){
+  const vl=(v||"").trim().toLowerCase();
+  // "test" alone, or an email address whose local part contains "test"
+  return vl==="test" || (vl.includes("@") && vl.split("@")[0].includes("test"));
+}
 function isTestRow(row){
   const col=getEmailCol();
-  // Primary check: email column (works reliably for English rows)
-  if (col && (row[col]||"").trim().toLowerCase()==="test") return true;
-  // Fallback for multilingual rows: positional mapping may misalign the email
-  // column, so scan every non-meta field for an exact "test" value.
+  // Primary: email column — uses includes() so "test@...", "test.foo@..." all match
+  if (col && (row[col]||"").trim().toLowerCase().includes("test")) return true;
+  // Fallback for multilingual rows: positional mapping may shift or drop the email
+  // column, so scan every non-"_"-prefixed field (including xoverflow* columns).
   if ((row._lang||"en")!=="en"){
     return Object.entries(row)
       .filter(([k])=>!k.startsWith("_"))
-      .some(([,v])=>(v||"").trim().toLowerCase()==="test");
+      .some(([,v])=>looksLikeTest(v));
   }
   return false;
 }
