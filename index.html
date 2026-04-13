@@ -411,6 +411,52 @@
       .quote-card { font-size: 0.8rem; padding: 11px 13px; }
     }
 
+    /* ─── VOICES SUMMARY ────────────────────────────────────────────── */
+    .vs-teaser {
+      background: #fdf8f8; border: 1px solid #e8d5d5;
+      border-left: 3px solid var(--red);
+      border-radius: 10px; padding: 16px 18px; margin-bottom: 24px;
+    }
+    .vs-teaser-label {
+      font-size: 0.65rem; font-weight: 700; letter-spacing: .08em;
+      text-transform: uppercase; color: var(--red); margin-bottom: 6px;
+    }
+    .vs-teaser-quote {
+      font-size: 0.88rem; color: var(--text); line-height: 1.55;
+      font-style: italic; margin-bottom: 10px;
+    }
+    .vs-teaser-link {
+      font-size: 0.75rem; font-weight: 700; color: var(--red);
+      background: none; border: none; padding: 0; cursor: pointer;
+      font-family: inherit; letter-spacing: .01em;
+      text-decoration: underline; text-underline-offset: 2px;
+    }
+    .vs-teaser-link:hover { opacity: .75; }
+    .vs-card {
+      background: #fdf8f8; border: 1px solid #e8d5d5;
+      border-left: 3px solid var(--red);
+      border-radius: 10px; padding: 20px 22px; margin-bottom: 22px;
+    }
+    .vs-card-label {
+      font-size: 0.65rem; font-weight: 700; letter-spacing: .08em;
+      text-transform: uppercase; color: var(--red); margin-bottom: 4px;
+    }
+    .vs-card-sub {
+      font-size: 0.76rem; color: var(--text-3); margin-bottom: 16px;
+    }
+    .vs-bullets { display: flex; flex-direction: column; gap: 13px; }
+    .vs-bullet { display: flex; gap: 12px; align-items: flex-start; }
+    .vs-dot {
+      width: 7px; height: 7px; border-radius: 50%; background: var(--red);
+      flex-shrink: 0; margin-top: 5px;
+    }
+    .vs-bullet-text { font-size: 0.83rem; color: var(--text); line-height: 1.55; }
+    .vs-bullet-text strong { color: var(--text); font-weight: 700; }
+    .vs-card-note {
+      font-size: 0.68rem; color: var(--text-3); margin-top: 16px;
+      font-style: italic;
+    }
+
     /* ─── PRINT FLYER LINK ───────────────────────────────────────────── */
     .hdr-print-link {
       background: none; border: none; padding: 0; margin: 0;
@@ -733,6 +779,19 @@ const USE_LOCAL  = IS_PREVIEW || IS_DUMMY;
 const IS_DIAG    = _params.has("diag");
 const REFRESH_MS = 5 * 60 * 1000;
 const SURVEY_OPEN = true; // ← set to false when the survey period ends
+
+// ─── VOICES SUMMARY ──────────────────────────────────────────────────────────
+// Update bullets here (or replace with a fetch from voices_summary.json later).
+const VOICES_SUMMARY = {
+  teaser: "The single most repeated ask across 82 written responses: a clear plan.",
+  bullets: [
+    { head: "No roadmap yet.", body: "Families feel they're being asked to absorb a major disruption with no assignment plan, no metrics, and no clear timeline. Words like \"rushed,\" \"unprepared,\" and \"making it up as they go\" appear throughout." },
+    { head: "Special education is the sharpest concern.", body: "Parents of children with IEPs, 504s, and ASD worry their legally-guaranteed supports won't survive a school change. FLS teachers describe being asked to build entirely new programs in buildings that have never housed them." },
+    { head: "Current kindergarteners face 3 schools in 3 years.", body: "Several parents independently flagged the same math: children who started kindergarten this year will have attended three different elementary schools by 3rd grade. The district has not addressed this publicly." },
+    { head: "Logistics are breaking working families.", body: "Siblings split across buildings, before/after care that doesn't cross schools, bus rides already running over an hour — these aren't edge cases, they describe the median South Portland family." },
+    { head: "Kaler families are watching for fairness.", body: "Parents from other schools worry Kaler students will bear a disproportionate burden. Kaler families say their children are coping because everyone is going through this together — and that promise needs to hold." },
+  ],
+};
 
 const SOURCES = {
   en: USE_LOCAL ? "simulated_responses.csv"
@@ -1265,6 +1324,30 @@ function mkRankedFromCounts(title, descText, counts, total){
 }
 
 // ─── RENDER OVERVIEW ─────────────────────────────────────────────────────────
+function mkVoicesTeaser(){
+  const d=document.createElement("div"); d.className="vs-teaser";
+  d.innerHTML=`
+    <div class="vs-teaser-label">What people are saying</div>
+    <div class="vs-teaser-quote">"${VOICES_SUMMARY.teaser}"</div>
+    <button class="vs-teaser-link" onclick="goToTab('voices')">Read 5 key themes from open-ended responses &rsaquo;</button>
+  `;
+  return d;
+}
+
+function mkVoicesSummary(totalN){
+  const d=document.createElement("div"); d.className="vs-card";
+  const bullets=VOICES_SUMMARY.bullets.map(b=>
+    `<div class="vs-bullet"><div class="vs-dot"></div><div class="vs-bullet-text"><strong>${b.head}</strong> ${b.body}</div></div>`
+  ).join("");
+  d.innerHTML=`
+    <div class="vs-card-label">Voices at a Glance</div>
+    <div class="vs-card-sub">5 themes synthesized from open-ended responses${totalN?` · ${totalN} responses`:""}.</div>
+    <div class="vs-bullets">${bullets}</div>
+    <div class="vs-card-note">Themes are synthesized from written responses and reflect dominant patterns, not a count of individual mentions.</div>
+  `;
+  return d;
+}
+
 function renderOverview(rows){
   const el=document.getElementById("ov-body"); el.innerHTML="";
   append(el, mkHead("Community Pulse","How the community feels about this transition",
@@ -1279,6 +1362,8 @@ function renderOverview(rows){
     mkStatCard("Meaningful Input",rows,"meaningful opportunity to provide input",
       ["Yes — shared perspective and felt heard"],COLORS.input,"felt they had a genuine opportunity to shape the process"),
   ].forEach(c=>{ if(c) sg.appendChild(c); });
+
+  el.appendChild(mkVoicesTeaser());
 
   append(el, mkHead(null,"Who has responded"));
   const roles={parent:0,educator:0,both:0,community:0};
@@ -1567,6 +1652,10 @@ function renderVoices(rows){
   const avail=OPEN_QS.filter(q=>{ const c=fcol(q.col); return c&&rows.some(r=>(r[c]||"").trim()); });
   if (!avail.length){ el.innerHTML=`<div class="no-data">No open-ended responses yet.</div>`; return; }
 
+  const openN=[...new Set(OPEN_QS.map(q=>fcol(q.col)).filter(Boolean))]
+    .flatMap(c=>rows.map(r=>(r[c]||"").trim()).filter(Boolean)).length;
+  el.appendChild(mkVoicesSummary(openN));
+
   const layout=document.createElement("div"); layout.className="voices-layout"; el.appendChild(layout);
   const nav=document.createElement("div"); nav.className="voices-nav";
   const main=document.createElement("div"); main.className="voices-main"; main.id="v-main";
@@ -1704,6 +1793,11 @@ document.getElementById("gf-role").addEventListener("click",e=>{
 });
 
 // ─── TAB NAV ─────────────────────────────────────────────────────────────────
+function goToTab(tab){
+  document.querySelectorAll(".nav-tab").forEach(t=>t.classList.toggle("active",t.dataset.tab===tab));
+  document.querySelectorAll(".tab-panel").forEach(p=>p.classList.toggle("active",p.id==="tab-"+tab));
+  document.getElementById("tab-"+tab).scrollIntoView({behavior:"smooth",block:"start"});
+}
 document.querySelector("nav").addEventListener("click",e=>{
   const b=e.target.closest(".nav-tab"); if(!b) return;
   const tab=b.dataset.tab;
