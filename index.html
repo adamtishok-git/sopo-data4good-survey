@@ -166,6 +166,7 @@
     .stat-n.bad     { color: var(--red); }
     .stat-n.neutral { color: var(--text); }
     .stat-desc { font-size: 0.75rem; color: var(--text-2); margin-bottom: 14px; line-height: 1.4; }
+    .stat-footnote { font-size: 0.68rem; color: var(--text-3); margin-top: 8px; font-style: italic; }
     .stat-bd { border-top: 1px solid var(--bg); padding-top: 10px; display: flex; flex-direction: column; gap: 4px; }
     .bd-row { display: flex; align-items: center; gap: 6px; }
     .bd-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
@@ -192,6 +193,7 @@
     .rank-row { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 4px; }
     .rank-label { font-size: 0.78rem; color: var(--text); line-height: 1.3; flex: 1; }
     .rank-pct { font-size: 0.78rem; font-weight: 700; color: var(--text); flex-shrink: 0; }
+    .rank-n { font-size: 0.72rem; font-weight: 400; color: var(--text-3); }
     .rank-track { height: 5px; background: var(--bg); border-radius: 3px; overflow: hidden; }
     .rank-fill { height: 100%; border-radius: 3px; background: var(--red); }
     .rank-fill.dim { background: #C8A0A0; }
@@ -1007,14 +1009,20 @@ function mkHead(eyebrow, title, descText){
   return d;
 }
 
-function mkStatCard(label, rows, colSub, posKeys, palette, descText, type="single"){
+function mkStatCard(label, rows, colSub, posKeys, palette, descText, type="single", excludeKeys=[]){
   const cols=fcolsAll(colSub); if (!cols.length) return null;
   const cnts=countV(rows,cols,type);
-  const total=Object.values(cnts).reduce((a,b)=>a+b,0); if (!total) return null;
-  // posKeys may be short labels (e.g. "Moderate trust") while the actual option
-  // text includes a descriptive suffix after an em-dash.  Normalize by stripping
-  // everything after the first em/en-dash before comparing.
   const normK=s=>s.split(/\s*[—–]\s*/)[0].trim().toLowerCase();
+  // Strip excluded options (e.g. "unaware" / "too young") from the denominator
+  // so they don't drag down positive sentiment rates. Show a footnote instead.
+  let excludedN=0;
+  if(excludeKeys.length){
+    excludeKeys.forEach(ek=>{
+      const nk=normK(ek);
+      Object.keys(cnts).forEach(k=>{ if(normK(k)===nk){ excludedN+=cnts[k]; delete cnts[k]; } });
+    });
+  }
+  const total=Object.values(cnts).reduce((a,b)=>a+b,0); if (!total) return null;
   const posN=posKeys.reduce((s,k)=>{
     const nk=normK(k);
     return s+Object.entries(cnts).reduce((a,[key,n])=>a+(normK(key)===nk?n:0),0);
@@ -1030,15 +1038,18 @@ function mkStatCard(label, rows, colSub, posKeys, palette, descText, type="singl
       <span class="bd-pct">${pp}%</span>
     </div>`;
   });
+  const footnote=excludedN>0
+    ? `<div class="stat-footnote">*${excludedN} response${excludedN!==1?"s":""} indicated child is unaware of or too young to understand the changes</div>`
+    : "";
   card.innerHTML=`
     <div class="stat-eyebrow">${label}</div>
     <div class="stat-n ${scoreCls(p)}">${p}%</div>
     <div class="stat-desc">${descText}</div>
-    <div class="stat-bd">${bd}</div>`;
+    <div class="stat-bd">${bd}</div>${footnote}`;
   return card;
 }
 
-function mkRanked(title, descText, rows, colSubs, type="multi", max=8, filterToKnown=false){
+function mkRanked(title, descText, rows, colSubs, type="multi", max=8, filterToKnown=false, showCount=false){
   // Always use fcolsAll so Section 5 copies (answered by community/all) are included.
   const cols=[...new Set(([].concat(colSubs)).flatMap(s=>fcolsAll(s)))];
   if (!cols.length) return null;
@@ -1061,7 +1072,7 @@ function mkRanked(title, descText, rows, colSubs, type="multi", max=8, filterToK
     item.innerHTML=`
       <div class="rank-row">
         <span class="rank-label">${lbl}</span>
-        <span class="rank-pct">${p}%</span>
+        <span class="rank-pct">${p}%${showCount?` <span class="rank-n">(${n})</span>`:""}</span>
       </div>
       <div class="rank-track"><div class="rank-fill${i>0?' dim':''}" style="width:${p}%"></div></div>`;
     list.appendChild(item);
@@ -1141,7 +1152,7 @@ function renderOverview(rows){
 
     append(el, mkRanked("Which school(s) are your children currently enrolled in?",
       "Select all that apply",
-      pRows,["children currently enrolled"],"multi",8));
+      pRows,["children currently enrolled"],"multi",8,false,true));
 
     append(el, mkRanked("How many children will you have in the district in 2026–27?",null,
       pRows,["how many children","number of children enrolled","children do you have enrolled"],"single",6));
@@ -1270,7 +1281,8 @@ function renderParents(rows){
   const cr=mkStatCard("How children are responding",rows,
     "children currently responding to the possibility",
     ["Positive — curious or excited about something new"],
-    COLORS.childresp,"responding positively — curious or excited","multi");
+    COLORS.childresp,"responding positively — curious or excited","multi",
+    ["Our child(ren) is unaware","Too young to understand yet"]);
   if (cr) kg.appendChild(cr);
   append(el, mkRanked("Child's adaptability to significant change",null,
     rows,["How would you describe your child"],"single",5));
