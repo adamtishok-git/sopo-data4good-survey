@@ -660,7 +660,7 @@
 <footer style="position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);padding:6px 20px;z-index:300">
   <div style="max-width:1080px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
     <p style="font-size:0.62rem;color:var(--text-3);line-height:1.5">
-      Independent community initiative. Not conducted by or affiliated with the South Portland School Department. &nbsp;·&nbsp; Voices summary AI-generated via Claude (Anthropic).
+      Independent community initiative. Not conducted by or affiliated with the South Portland School Department.
     </p>
     <a href="mailto:sopoparents@gmail.com" style="font-size:0.62rem;font-weight:600;color:var(--red);white-space:nowrap;text-decoration:none">sopoparents@gmail.com</a>
   </div>
@@ -1345,7 +1345,7 @@ function mkVoicesSummary(totalN){
     <div class="vs-card-label">Voices at a Glance</div>
     <div class="vs-card-sub">5 themes synthesized from open-ended responses${totalN?` · ${totalN} responses`:""}.</div>
     <div class="vs-bullets">${bullets}</div>
-    <div class="vs-card-note">Themes are synthesized from written responses and reflect dominant patterns, not a count of individual mentions. Raw responses are available in the quote browser below.</div>
+    <div class="vs-card-note">AI-generated summary · Themes are synthesized from written responses using Claude (Anthropic) and reflect dominant patterns, not a count of individual mentions. Raw responses are available in the quote browser below.</div>
   `;
   return d;
 }
