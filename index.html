@@ -1343,7 +1343,7 @@ function mkVoicesSummary(totalN){
   ).join("");
   d.innerHTML=`
     <div class="vs-card-label">Voices at a Glance</div>
-    <div class="vs-card-sub">5 themes synthesized from open-ended responses${totalN?` · ${totalN} responses`:""}.</div>
+    <div class="vs-card-sub">5 themes synthesized from open-ended responses${totalN?` · ${totalN} written comments`:""}.</div>
     <div class="vs-bullets">${bullets}</div>
     <div class="vs-card-note">AI-generated summary · Themes are synthesized from written responses using Claude (Anthropic) and reflect dominant patterns, not a count of individual mentions. Raw responses are available in the quote browser below.</div>
   `;
