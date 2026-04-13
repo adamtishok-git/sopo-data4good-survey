@@ -421,10 +421,11 @@
       font-size: 0.65rem; font-weight: 700; letter-spacing: .08em;
       text-transform: uppercase; color: var(--red); margin-bottom: 6px;
     }
-    .vs-teaser-quote {
-      font-size: 0.88rem; color: var(--text); line-height: 1.55;
-      font-style: italic; margin-bottom: 10px;
+    .vs-teaser-body {
+      font-size: 0.86rem; color: var(--text-2); line-height: 1.65;
+      margin-bottom: 12px;
     }
+    .vs-teaser-body em { color: var(--text); font-style: italic; }
     .vs-teaser-link {
       font-size: 0.75rem; font-weight: 700; color: var(--red);
       background: none; border: none; padding: 0; cursor: pointer;
@@ -1327,9 +1328,9 @@ function mkRankedFromCounts(title, descText, counts, total){
 function mkVoicesTeaser(){
   const d=document.createElement("div"); d.className="vs-teaser";
   d.innerHTML=`
-    <div class="vs-teaser-label">What people are saying</div>
-    <div class="vs-teaser-quote">"${VOICES_SUMMARY.teaser}"</div>
-    <button class="vs-teaser-link" onclick="goToTab('voices')">Read 5 key themes from open-ended responses &rsaquo;</button>
+    <div class="vs-teaser-label">The human story</div>
+    <div class="vs-teaser-body">82 families and educators took the time to write. The message is consistent: trust is low, the timeline feels rushed, and specific groups — children with IEPs, working families juggling multiple drop-offs, kindergarteners on track for three schools in three years — haven't been addressed yet. The survey data shows <em>what</em> people care about. The written responses show <em>why</em>.</div>
+    <button class="vs-teaser-link" onclick="goToTab('voices')">Read the 5 key themes &rsaquo;</button>
     <div style="font-size:0.65rem;color:var(--text-3);margin-top:8px;">AI-generated summary · Claude (Anthropic)</div>
   `;
   return d;
