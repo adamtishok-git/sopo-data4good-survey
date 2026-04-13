@@ -494,9 +494,16 @@
     .modal-box--flyer { max-width: 540px; }
     .flyer-modal-controls {
       display: flex; align-items: center; gap: 7px;
-      padding: 12px 20px; border-bottom: 1px solid var(--border);
-      flex-wrap: wrap;
+      padding: 10px 20px 0; flex-wrap: wrap;
     }
+    .flyer-modal-controls-row {
+      display: flex; align-items: center; gap: 7px; flex-wrap: wrap;
+      width: 100%; padding-bottom: 10px;
+    }
+    .flyer-modal-controls-row + .flyer-modal-controls-row {
+      border-top: 1px solid var(--border); padding-top: 10px;
+    }
+    .flyer-modal-controls-row:last-child { border-bottom: 1px solid var(--border); }
     .flyer-aud-label {
       font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
       letter-spacing: .07em; color: var(--text-3); margin-right: 2px; flex-shrink: 0;
@@ -754,11 +761,23 @@
       <button class="modal-close" onclick="closeModal('flyer-modal')">&#x2715;</button>
     </div>
     <div class="flyer-modal-controls">
-      <span class="flyer-aud-label">Audience:</span>
-      <button class="pill on" id="faud-parent"    onclick="setFlyerAud('parent')">Parent</button>
-      <button class="pill"    id="faud-educator"  onclick="setFlyerAud('educator')">Educator</button>
-      <button class="pill"    id="faud-community" onclick="setFlyerAud('community')">Community</button>
-      <button class="flyer-print-btn" onclick="doPrint()">Print</button>
+      <div class="flyer-modal-controls-row">
+        <span class="flyer-aud-label">Audience:</span>
+        <button class="pill on" id="faud-parent"    onclick="setFlyerAud('parent')">Parent</button>
+        <button class="pill"    id="faud-educator"  onclick="setFlyerAud('educator')">Educator</button>
+        <button class="pill"    id="faud-community" onclick="setFlyerAud('community')">Community</button>
+        <button class="flyer-print-btn" onclick="doPrint()">Print</button>
+      </div>
+      <div class="flyer-modal-controls-row">
+        <span class="flyer-aud-label">Language:</span>
+        <button class="pill on" id="flang-en" onclick="setFlyerLang('en')">EN</button>
+        <button class="pill"    id="flang-es" onclick="setFlyerLang('es')">ES</button>
+        <button class="pill"    id="flang-pt" onclick="setFlyerLang('pt')">PT</button>
+        <button class="pill"    id="flang-fr" onclick="setFlyerLang('fr')">FR</button>
+        <button class="pill"    id="flang-ht" onclick="setFlyerLang('ht')">HT</button>
+        <button class="pill"    id="flang-ln" onclick="setFlyerLang('ln')">LN</button>
+        <button class="pill"    id="flang-ar" onclick="setFlyerLang('ar')">AR</button>
+      </div>
     </div>
     <div class="flyer-preview-outer">
       <div class="flyer-zoom">
@@ -1899,8 +1918,21 @@ document.addEventListener("keydown", e => {
 
 // ─── PRINT FLYER ─────────────────────────────────────────────────────────────
 const FLYER_URL = "https://sopo-data4good-survey.vercel.app/";
-let _flyerAud = "parent";
+let _flyerAud  = "parent";
+let _flyerLang = "en";
 let _flyerQRDone = false;
+let _flyerTranslations = null;  // loaded on first non-EN selection
+
+async function loadFlyerTranslations() {
+  if (_flyerTranslations) return;
+  try {
+    const r = await fetch("flyer_translations.json");
+    _flyerTranslations = await r.json();
+  } catch(e) {
+    console.warn("Could not load flyer_translations.json", e);
+    _flyerTranslations = {};
+  }
+}
 
 const FLYER_CONTENT = {
   parent: {
@@ -1924,40 +1956,61 @@ const FLYER_CONTENT = {
   },
 };
 
-function flyerHTML(aud, asOf) {
-  const d = FLYER_CONTENT[aud];
+const FLYER_STATIC_EN = {
+  topbar:  "Community-led \u00b7 Not district-issued",
+  eyebrow: "South Portland School Reconfiguration",
+  context: "Following a school board vote in March 2026, South Portland is reconfiguring its elementary schools. This community-led survey is gathering perspectives from families and educators to help guide a transition that works for everyone.",
+  qrLabel: "Scan to see results & take the survey",
+  footerL: "Community-led initiative \u00b7 South Portland, Maine",
+  footerR: "Questions? SopoParents@gmail.com",
+};
+
+function flyerHTML(aud, asOf, lang="en") {
+  const enD = FLYER_CONTENT[aud];
+  const tx  = (lang !== "en" && _flyerTranslations && _flyerTranslations[lang]);
+  const d   = tx ? { ...enD, ...tx.audiences[aud] } : enD;
+  const s   = tx ? tx.static : FLYER_STATIC_EN;
+  const rtl = lang === "ar";
+  const qrId = aud==="parent"?"f-qr-p":aud==="educator"?"f-qr-e":"f-qr-c";
   const bullets = d.insights.map(t=>`<li><span class="f-dot"></span>${t}</li>`).join("");
   return `
-    <div class="f-topbar">Community-led &nbsp;·&nbsp; Not district-issued</div>
-    <div class="f-body">
-      <div class="f-eyebrow">South Portland School Reconfiguration</div>
+    <div class="f-topbar"${rtl?' dir="rtl"':''}>${s.topbar}</div>
+    <div class="f-body"${rtl?' dir="rtl"':''}>
+      <div class="f-eyebrow">${s.eyebrow}</div>
       <div class="f-headline">${d.headline}</div>
-      <div class="f-context">Following a school board vote in March 2026, South Portland is reconfiguring its elementary schools. This community-led survey is gathering perspectives from families and educators to help guide a transition that works for everyone.</div>
+      <div class="f-context">${s.context}</div>
       <hr class="f-rule">
       <div class="f-insights-label">${d.insightsLabel}</div>
       <ul class="f-insights">${bullets}</ul>
       <div class="f-cta">${d.cta}</div>
       <div class="f-qr-wrap">
-        <div class="f-qr-label">Scan to see results &amp; take the survey</div>
-        <div class="f-qr-box" id="${aud==="parent"?"f-qr-p":aud==="educator"?"f-qr-e":"f-qr-c"}"></div>
+        <div class="f-qr-label">${s.qrLabel}</div>
+        <div class="f-qr-box" id="${qrId}"></div>
         <div class="f-url">sopo-data4good-survey.vercel.app</div>
       </div>
       <div class="f-footnotes">
-        <div class="f-langs-list">English &nbsp;·&nbsp; Español &nbsp;·&nbsp; Português &nbsp;·&nbsp; Français &nbsp;·&nbsp; Kreyòl Ayisyen &nbsp;·&nbsp; Lingala &nbsp;·&nbsp; العربية</div>
+        <div class="f-langs-list">English &nbsp;&middot;&nbsp; Español &nbsp;&middot;&nbsp; Português &nbsp;&middot;&nbsp; Français &nbsp;&middot;&nbsp; Kreyòl Ayisyen &nbsp;&middot;&nbsp; Lingala &nbsp;&middot;&nbsp; العربية</div>
         <div class="f-as-of">${asOf}</div>
       </div>
     </div>
-    <div class="f-footer">
-      <span>Community-led initiative &nbsp;·&nbsp; South Portland, Maine</span>
+    <div class="f-footer"${rtl?' dir="rtl"':''}>
+      <span>${s.footerL}</span>
       <span>Questions? &nbsp;<strong>SopoParents@gmail.com</strong></span>
     </div>`;
 }
 
 function setFlyerAud(aud) {
   _flyerAud = aud;
-  ["parent","educator","community"].forEach(a => {
-    document.getElementById("faud-"+a).classList.toggle("on", a===aud);
-  });
+  ["parent","educator","community"].forEach(a =>
+    document.getElementById("faud-"+a).classList.toggle("on", a===aud));
+  renderFlyerPreview();
+}
+
+async function setFlyerLang(lang) {
+  _flyerLang = lang;
+  ["en","es","pt","fr","ht","ln","ar"].forEach(l =>
+    document.getElementById("flang-"+l).classList.toggle("on", l===lang));
+  if (lang !== "en") await loadFlyerTranslations();
   renderFlyerPreview();
 }
 
@@ -1965,9 +2018,8 @@ function renderFlyerPreview() {
   const asOf = _flyerLastFetch
     ? "Results as of " + new Date(_flyerLastFetch).toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"})
     : "";
-  const html = flyerHTML(_flyerAud, asOf);
+  const html = flyerHTML(_flyerAud, asOf, _flyerLang);
   document.getElementById("flyer-preview-doc").innerHTML = html;
-  // QR code in preview
   const qrId = _flyerAud==="parent"?"f-qr-p":_flyerAud==="educator"?"f-qr-e":"f-qr-c";
   const box = document.getElementById(qrId);
   if (box && !box.dataset.qrdone && typeof QRCode !== "undefined") {
@@ -1981,7 +2033,7 @@ function doPrint() {
     ? "Results as of " + new Date(_flyerLastFetch).toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"})
     : "";
   const printDoc = document.getElementById("flyer-print-doc");
-  printDoc.innerHTML = flyerHTML(_flyerAud, asOf).replace(
+  printDoc.innerHTML = flyerHTML(_flyerAud, asOf, _flyerLang).replace(
     // give the print QR div a unique id so it doesn't clash with preview
     /id="(f-qr-[pec])"/g, 'id="print-$1"'
   );

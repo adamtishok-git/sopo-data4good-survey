@@ -1,0 +1,254 @@
+{
+  "es": {
+    "static": {
+      "topbar": "Dirigido por la comunidad · No emitido por el distrito",
+      "eyebrow": "Reconfiguración de la escuela del sur de Portland",
+      "context": "Tras una votación de la junta escolar en marzo de 2026, South Portland está reconfigurando sus escuelas primarias.Esta encuesta dirigida por la comunidad recopila perspectivas de familias y educadores para ayudar a guiar una transición que funcione para todos.",
+      "qrLabel": "Escanee para ver los resultados y realizar la encuesta",
+      "footerL": "Iniciativa liderada por la comunidad · South Portland, Maine",
+      "footerR": "Questions? SopoParents@gmail.com"
+    },
+    "audiences": {
+      "parent": {
+        "headline": "Los padres de South Portland comparten<br>lo que más importa.<br><em>¿Está tu voz en la mezcla?</em>",
+        "insightsLabel": "Lo que dicen los padres hasta ahora",
+        "insights": [
+          "Minimizar la distancia desde casa",
+          "Garantizar resultados educativos de calidad para todos los estudiantes.",
+          "Mantener juntos a los niños del vecindario y a los grupos de amigos"
+        ],
+        "cta": "<strong>¿Estás de acuerdo?</strong>Escanee el código a continuación para ver los resultados completos y agregue su voz a la conversación."
+      },
+      "educator": {
+        "headline": "Los educadores del sur de Portland comparten<br>lo que necesitan para que esto funcione.<br><em>¿Está tu voz en la mezcla?</em>",
+        "insightsLabel": "Lo que dicen los educadores hasta ahora",
+        "insights": [
+          "Más tiempo para la colaboración entre equipos",
+          "Claridad temprana en las composiciones de clase y las tareas de construcción.",
+          "Continuidad del apoyo para estudiantes con necesidades de IEP y ESOL"
+        ],
+        "cta": "<strong>¿Estás de acuerdo?</strong>Escanee el código a continuación para ver los resultados completos y agregue su experiencia a la conversación."
+      },
+      "community": {
+        "headline": "South Portland está atravesando un cambio importante.<br><em>¿Está tu voz en la conversación?</em>",
+        "insightsLabel": "Lo que la comunidad está diciendo hasta ahora",
+        "insights": [
+          "Las familias priorizan mantener a los niños cerca de casa y con sus grupos de amigos",
+          "Los educadores dicen que necesitan más tiempo de preparación antes de la transición",
+          "Los residentes quieren respuestas claras sobre las asignaciones escolares mucho antes del cambio."
+        ],
+        "cta": "<strong>¿Estás de acuerdo?</strong>Escanee el código a continuación para ver los resultados completos y únase a la conversación: su perspectiva es importante."
+      }
+    }
+  },
+  "pt": {
+    "static": {
+      "topbar": "Liderado pela comunidade · Não emitido pelo distrito",
+      "eyebrow": "Reconfiguração da Escola South Portland",
+      "context": "Após uma votação do conselho escolar em março de 2026, South Portland está reconfigurando suas escolas primárias.Esta pesquisa liderada pela comunidade está reunindo perspectivas de famílias e educadores para ajudar a orientar uma transição que funcione para todos.",
+      "qrLabel": "Digitalize para ver os resultados e responda à pesquisa",
+      "footerL": "Iniciativa liderada pela comunidade · South Portland, Maine",
+      "footerR": "Questions? SopoParents@gmail.com"
+    },
+    "audiences": {
+      "parent": {
+        "headline": "Os pais de South Portland estão compartilhando<br>o que é mais importante.<br><em>Sua voz está na mistura?</em>",
+        "insightsLabel": "O que os pais estão dizendo até agora",
+        "insights": [
+          "Minimizando a distância de casa",
+          "Garantir resultados educacionais de qualidade para todos os alunos",
+          "Manter as crianças da vizinhança e grupos de amigos juntos"
+        ],
+        "cta": "<strong>Você concorda?</strong>Leia o código abaixo para ver os resultados completos e adicione sua voz à conversa."
+      },
+      "educator": {
+        "headline": "Os educadores de South Portland estão compartilhando<br>o que eles precisam para fazer isso funcionar.<br><em>Sua voz está presente?</em>",
+        "insightsLabel": "O que os educadores estão dizendo até agora",
+        "insights": [
+          "Mais tempo para colaboração entre equipes",
+          "Clareza antecipada sobre composições de turmas e tarefas de construção",
+          "Continuidade do apoio a estudantes com necessidades de IEPs e ESOL"
+        ],
+        "cta": "<strong>Você concorda?</strong>Leia o código abaixo para ver os resultados completos e adicione sua experiência à conversa."
+      },
+      "community": {
+        "headline": "South Portland está passando por uma grande mudança.<br><em>Sua voz está na conversa?</em>",
+        "insightsLabel": "O que a comunidade está dizendo até agora",
+        "insights": [
+          "As famílias priorizam manter as crianças perto de casa e com seus grupos de amigos",
+          "Os educadores dizem que precisam de mais tempo de preparação antes da transição",
+          "Os residentes querem respostas claras sobre as tarefas escolares muito antes da mudança"
+        ],
+        "cta": "<strong>Você concorda?</strong>Leia o código abaixo para ver os resultados completos e participe da conversa – sua perspectiva é importante."
+      }
+    }
+  },
+  "fr": {
+    "static": {
+      "topbar": "Dirigé par la communauté · Non émis par le district",
+      "eyebrow": "Reconfiguration de l'école de South Portland",
+      "context": "À la suite d'un vote du conseil scolaire en mars 2026, South Portland reconfigure ses écoles élémentaires.Cette enquête menée par la communauté recueille les points de vue des familles et des éducateurs pour aider à guider une transition qui fonctionne pour tout le monde.",
+      "qrLabel": "Scannez pour voir les résultats et répondez à l'enquête",
+      "footerL": "Initiative communautaire · South Portland, Maine",
+      "footerR": "Questions? SopoParents@gmail.com"
+    },
+    "audiences": {
+      "parent": {
+        "headline": "Les parents du sud de Portland partagent<br>ce qui compte le plus.<br><em>Votre voix est-elle dans le mix ?</em>",
+        "insightsLabel": "Ce que disent les parents jusqu'à présent",
+        "insights": [
+          "Minimiser la distance du domicile",
+          "Garantir des résultats éducatifs de qualité pour tous les étudiants",
+          "Garder les enfants du quartier et les groupes d’amis ensemble"
+        ],
+        "cta": "<strong>Êtes-vous d'accord ?</strong>Scannez le code ci-dessous pour voir les résultats complets et ajoutez votre voix à la conversation."
+      },
+      "educator": {
+        "headline": "Les enseignants du sud de Portland partagent<br>ce dont ils ont besoin pour que cela fonctionne.<br><em>Votre voix est-elle dans le mix ?</em>",
+        "insightsLabel": "Ce que disent les éducateurs jusqu’à présent",
+        "insights": [
+          "Plus de temps pour la collaboration entre les équipes",
+          "Clarification précoce sur la composition des classes et les tâches de construction",
+          "Continuité du soutien aux étudiants ayant des besoins en IEP et en ESOL"
+        ],
+        "cta": "<strong>Êtes-vous d'accord ?</strong>Scannez le code ci-dessous pour voir les résultats complets et ajoutez votre expertise à la conversation."
+      },
+      "community": {
+        "headline": "South Portland est confronté à un changement majeur.<br><em>Votre voix est-elle présente dans la conversation ?</em>",
+        "insightsLabel": "Ce que dit la communauté jusqu'à présent",
+        "insights": [
+          "Les familles donnent la priorité à garder les enfants près de chez eux et avec leurs groupes d'amis",
+          "Les éducateurs disent avoir besoin de plus de temps de préparation avant la transition",
+          "Les résidents veulent des réponses claires sur les devoirs scolaires bien avant le changement"
+        ],
+        "cta": "<strong>Êtes-vous d'accord ?</strong>Scannez le code ci-dessous pour voir les résultats complets et rejoignez la conversation : votre point de vue compte."
+      }
+    }
+  },
+  "ht": {
+    "static": {
+      "topbar": "Dirije kominote a · Se pa distri a",
+      "eyebrow": "Rekonfigurasyon lekòl South Portland",
+      "context": "Apre yon vòt nan konsèy lekòl la an mas 2026, South Portland ap rekonfigire lekòl elemantè li yo.Sondaj kominotè sa a ap rasanble pèspektiv nan men fanmi yo ak edikatè yo pou ede gide yon tranzisyon ki travay pou tout moun.",
+      "qrLabel": "Eskane pou wè rezilta yo epi pran sondaj la",
+      "footerL": "Inisyativ kominotè dirije · South Portland, Maine",
+      "footerR": "Questions? SopoParents@gmail.com"
+    },
+    "audiences": {
+      "parent": {
+        "headline": "Paran South Portland ap pataje<br>sa ki pi enpòtan yo.<br><em>Èske vwa ou nan melanj la?</em>",
+        "insightsLabel": "Sa paran yo ap di jiskaprezan",
+        "insights": [
+          "Minimize distans ak kay la",
+          "Asire bon jan kalite rezilta edikasyon pou tout elèv yo",
+          "Kenbe timoun nan katye yo ak gwoup zanmi yo ansanm"
+        ],
+        "cta": "<strong>Ou dakò?</strong>Eskane kòd ki anba a pou wè rezilta konplè epi ajoute vwa ou nan konvèsasyon an."
+      },
+      "educator": {
+        "headline": "Edikatè South Portland yo ap pataje<br>sa yo bezwen pou fè sa a mache.<br><em>Èske vwa ou nan melanj la?</em>",
+        "insightsLabel": "Sa edikatè yo ap di jiskaprezan",
+        "insights": [
+          "Plis tan pou kolaborasyon ekip kwa-bilding",
+          "Klè bonè sou konpozisyon klas yo ak devwa bilding yo",
+          "Kontinwite sipò pou elèv ki gen IEP ak bezwen ESOL"
+        ],
+        "cta": "<strong>Ou dakò?</strong>Eskane kòd ki anba a pou wè rezilta konplè epi ajoute ekspètiz ou nan konvèsasyon an."
+      },
+      "community": {
+        "headline": "South Portland ap navige yon gwo chanjman.<br><em>Èske vwa ou nan konvèsasyon an?</em>",
+        "insightsLabel": "Sa kominote a ap di jiskaprezan",
+        "insights": [
+          "Fanmi yo bay priyorite pou kenbe timoun yo pre lakay yo epi ak gwoup zanmi yo",
+          "Edikatè yo di yo bezwen plis tan preparasyon anvan tranzisyon an",
+          "Rezidan yo vle jwenn repons klè sou devwa lekòl yo byen anvan chanjman an"
+        ],
+        "cta": "<strong>Ou dakò?</strong>Eskane kòd ki anba a pou wè rezilta konplè yo epi rantre nan konvèsasyon an - pèspektiv ou enpòtan."
+      }
+    }
+  },
+  "ln": {
+    "static": {
+      "topbar": "Kokambama na lisanga · Epesami na etuka te",
+      "eyebrow": "Bobongisi lisusu ya Eteyelo ya South Portland",
+      "context": "Nsima ya voti ya conseil scolaire na sanza ya misato 2026, South Portland ezali kobongisa lisusu biteyelo na yango ya ebandeli. Ankɛtɛ oyo etambwisami na bato ya mboka ezali kosangisa makanisi ya mabota mpe bateyi mpo na kosalisa kotambwisa mbongwana oyo esalaka mpo na moto nyonso.",
+      "qrLabel": "Scan po omona ba résultats & zua enquête",
+      "footerL": "Initiative oyo etambwisami na communauté · South Portland, Maine",
+      "footerR": "Questions? SopoParents@gmail.com"
+    },
+    "audiences": {
+      "parent": {
+        "headline": "Baboti ya South Portland bazali kokabola<br>nini ezali na ntina mingi.<br><em>Mongongo na yo ezali na kati ya mélange?</em>",
+        "insightsLabel": "Oyo baboti bazali koloba tii sikoyo",
+        "insights": [
+          "Kosala ete ntaka ezala moke na ndako",
+          "Kosala ete bayekoli banso bazwa mbano ya malamu ya mateya",
+          "Kobatela bana ya quartier na ba groupes ya baninga esika moko"
+        ],
+        "cta": "<strong>Ondimi?||SUKA_MAKASI|| Scan code oyo ezali awa na se mpo na komona ba résultats mobimba mpe bakisa mongongo na yo na lisolo."
+      },
+      "educator": {
+        "headline": "Ba éducateurs ya South Portland bazali kokabola<br>oyo basengeli na yango mpo ete oyo esalaka.<br><em>Mongongo na yo ezali na kati ya mélange?</em>",
+        "insightsLabel": "Oyo ba éducateurs bazali koloba tii sikoyo",
+        "insights": [
+          "Tango mingi pona collaboration ya équipe cross-building",
+          "Polele ya ebandeli na ba compositions ya classe mpe ba devoirs ya kotonga",
+          "Bokobi ya lisungi mpo na banakelasi oyo bazali na ba IEP mpe bamposa ya ESOL"
+        ],
+        "cta": "<strong>Ondimi?||SUKA_MAKASI|| Scan code oyo ezali awa na se mpo na komona ba résultats mobimba mpe kobakisa mayele na yo na lisolo."
+      },
+      "community": {
+        "headline": "South Portland ezali ko naviguer changement munene.<br><em>Mongongo na yo ezali na masolo?</em>",
+        "insightsLabel": "Oyo communauté ezali koloba tii sikoyo",
+        "insights": [
+          "Mabota batyaka na esika ya liboso kobatela bana penepene na ndako mpe elongo na bituluku ya baninga na bango",
+          "Bateyi balobi ete basengeli na ntango mingi ya komibongisa yambo na mbongwana",
+          "Bavandi balingi biyano ya polele na ntina ya misala ya kelasi liboso mpenza ya mbongwana"
+        ],
+        "cta": "<strong>Ondimi?||SUKA_MAKASI|| Scan code oyo ezali awa na se mpo na komona ba résultats mobimba mpe kosangana na lisolo — perspective na yo ezali na ntina."
+      }
+    }
+  },
+  "ar": {
+    "static": {
+      "topbar": "بقيادة المجتمع · غير صادرة عن المنطقة",
+      "eyebrow": "إعادة تشكيل مدرسة جنوب بورتلاند",
+      "context": "بعد تصويت مجلس إدارة المدرسة في مارس 2026، تعيد جنوب بورتلاند تشكيل مدارسها الابتدائية.يجمع هذا الاستطلاع الذي يقوده المجتمع وجهات نظر من العائلات والمعلمين للمساعدة في توجيه عملية انتقالية تناسب الجميع.",
+      "qrLabel": "قم بالمسح لرؤية النتائج وإجراء الاستطلاع",
+      "footerL": "مبادرة يقودها المجتمع المحلي · جنوب بورتلاند، ماين",
+      "footerR": "Questions? SopoParents@gmail.com"
+    },
+    "audiences": {
+      "parent": {
+        "headline": "يشارك الآباء من جنوب بورتلاند<br>ما هو الأكثر أهمية.<br><em>هل صوتك ضمن هذا المزيج؟</em>",
+        "insightsLabel": "ما يقوله الآباء حتى الآن",
+        "insights": [
+          "تقليل المسافة من المنزل",
+          "ضمان نتائج تعليمية عالية الجودة لجميع الطلاب",
+          "الحفاظ على أطفال الحي ومجموعات الأصدقاء معًا"
+        ],
+        "cta": "<strong>هل توافق؟</strong>امسح الرمز أدناه لرؤية النتائج الكاملة وأضف صوتك إلى المحادثة."
+      },
+      "educator": {
+        "headline": "يشارك المعلمون في جنوب بورتلاند<br>ما يحتاجون إليه لإنجاز هذا العمل.<br><em>هل صوتك ضمن هذا المزيج؟</em>",
+        "insightsLabel": "ما يقوله التربويون حتى الآن",
+        "insights": [
+          "المزيد من الوقت للتعاون بين أعضاء الفريق",
+          "الوضوح المبكر بشأن التراكيب الصفية ومهام البناء",
+          "استمرارية الدعم للطلاب ذوي احتياجات IEPs وESOL"
+        ],
+        "cta": "<strong>هل توافق؟</strong>قم بمسح الرمز أدناه لرؤية النتائج الكاملة وإضافة خبرتك إلى المحادثة."
+      },
+      "community": {
+        "headline": "تمر جنوب بورتلاند بتغيير كبير.<br><em>هل صوتك في المحادثة؟</em>",
+        "insightsLabel": "ما يقوله المجتمع حتى الآن",
+        "insights": [
+          "تعطي العائلات الأولوية لإبقاء الأطفال بالقرب من المنزل ومع مجموعات أصدقائهم",
+          "يقول المعلمون أنهم بحاجة إلى مزيد من الوقت للتحضير قبل الانتقال",
+          "يريد السكان إجابات واضحة حول الواجبات المدرسية قبل التغيير بوقت طويل"
+        ],
+        "cta": "<strong>هل توافق؟</strong>قم بمسح الرمز أدناه لرؤية النتائج الكاملة والانضمام إلى المحادثة - وجهة نظرك مهمة."
+      }
+    }
+  }
+}
