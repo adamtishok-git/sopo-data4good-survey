@@ -1330,6 +1330,7 @@ function mkVoicesTeaser(){
     <div class="vs-teaser-label">What people are saying</div>
     <div class="vs-teaser-quote">"${VOICES_SUMMARY.teaser}"</div>
     <button class="vs-teaser-link" onclick="goToTab('voices')">Read 5 key themes from open-ended responses &rsaquo;</button>
+    <div style="font-size:0.65rem;color:var(--text-3);margin-top:8px;">AI-generated summary · Claude (Anthropic)</div>
   `;
   return d;
 }
@@ -1343,7 +1344,7 @@ function mkVoicesSummary(totalN){
     <div class="vs-card-label">Voices at a Glance</div>
     <div class="vs-card-sub">5 themes synthesized from open-ended responses${totalN?` · ${totalN} responses`:""}.</div>
     <div class="vs-bullets">${bullets}</div>
-    <div class="vs-card-note">Themes are synthesized from written responses and reflect dominant patterns, not a count of individual mentions.</div>
+    <div class="vs-card-note">AI-generated summary · Themes are synthesized from written responses using Claude (Anthropic) and reflect dominant patterns, not a count of individual mentions. Raw responses are available in the quote browser below.</div>
   `;
   return d;
 }
