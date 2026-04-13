@@ -940,9 +940,12 @@ function applyTF(rows,tab){
         const col=fcolsAll("children currently enrolled")[0];
         if (col){
           const v=(r[col]||"").toLowerCase();
-          if (f.level==="elementary"&&!/brown|dyer|kaler|skillin|small/i.test(v)) return false;
-          if (f.level==="middle"   &&!/middle/i.test(v)) return false;
-          if (f.level==="high"     &&!/high school/i.test(v)) return false;
+          if (f.level==="brown"    &&!v.includes("brown"))    return false;
+          if (f.level==="dyer"     &&!v.includes("dyer"))     return false;
+          if (f.level==="kaler"    &&!v.includes("kaler"))    return false;
+          if (f.level==="skillin"  &&!v.includes("skillin"))  return false;
+          if (f.level==="small"    &&!v.includes("small"))    return false;
+          if (f.level==="incoming" &&!v.includes("incoming")) return false;
         }
       }
       if (f.needs!=="all"){
@@ -1456,7 +1459,7 @@ function buildTF(tabId){
   bar.innerHTML="";
   if (tabId==="parents"){
     const cfg=[
-      {label:"School level", key:"level", opts:[["all","All"],["elementary","Elementary"],["middle","Middle"],["high","High School"]]},
+      {label:"School", key:"level", opts:[["all","All"],["brown","Brown"],["dyer","Dyer"],["kaler","Kaler"],["skillin","Skillin"],["small","Small"],["incoming","Incoming"]]},
       {label:"Additional needs", key:"needs", opts:[["all","All"],["yes","Has IEP / 504 / ESOL"],["no","No additional needs"]]},
       {label:"Children enrolled", key:"children", opts:[["all","All"],["one","1 Child"],["multi","2+ Children"]]},
     ];
