@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flyer Preview — SPSD Community Survey</title>
+<style>
+
+/* ─── SCREEN: preview chrome ─────────────────────────────────── */
+@media screen {
+  body {
+    background: #d0d0d0;
+    margin: 0;
+    padding: 28px 24px 60px;
+    font-family: system-ui, -apple-system, sans-serif;
+  }
+  .preview-bar {
+    max-width: 8.5in;
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .preview-bar-label {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .07em;
+    color: #555;
+    margin-right: 4px;
+  }
+  .aud-btn {
+    padding: 5px 18px;
+    border: 2px solid #aaa;
+    border-radius: 99px;
+    background: white;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+    transition: all .15s;
+  }
+  .aud-btn.on {
+    border-color: #8C1515;
+    background: #8C1515;
+    color: white;
+  }
+  .print-btn {
+    margin-left: auto;
+    padding: 6px 20px;
+    border: none;
+    border-radius: 99px;
+    background: #111;
+    color: white;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .flyer-shadow {
+    max-width: 8.5in;
+    margin: 0 auto;
+    box-shadow: 0 8px 40px rgba(0,0,0,.3);
+  }
+}
+
+/* ─── PRINT ──────────────────────────────────────────────────── */
+@media print {
+  .preview-bar { display: none !important; }
+  body { margin: 0; padding: 0; background: white; }
+  .flyer-shadow { box-shadow: none; }
+  @page { size: letter portrait; margin: 0; }
+}
+
+/* ─── FLYER (screen + print) ─────────────────────────────────── */
+.flyer {
+  width: 8.5in;
+  min-height: 11in;
+  background: white;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* Top bar */
+.f-topbar {
+  background: #8C1515;
+  color: rgba(255,255,255,.9);
+  padding: 11px 0.7in;
+  font-size: 8.5pt;
+  font-weight: 600;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Body */
+.f-body {
+  flex: 1;
+  padding: 0.52in 0.75in 0.4in;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Eyebrow above headline */
+.f-eyebrow {
+  font-size: 8.5pt;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: #8C1515;
+  margin-bottom: 10px;
+}
+
+/* Headline */
+.f-headline {
+  font-size: 27pt;
+  font-weight: 800;
+  line-height: 1.18;
+  color: #111;
+  margin: 0 0 0.32in;
+  letter-spacing: -.02em;
+}
+.f-headline em {
+  color: #8C1515;
+  font-style: normal;
+}
+
+/* Context blurb */
+.f-context {
+  font-size: 10.5pt;
+  color: #555;
+  line-height: 1.6;
+  margin-bottom: 0.22in;
+}
+
+/* Divider */
+.f-rule {
+  border: none;
+  border-top: 2px solid #eee;
+  margin: 0 0 18px;
+}
+
+/* Insights section */
+.f-insights-label {
+  font-size: 8pt;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: #8C1515;
+  margin-bottom: 12px;
+}
+.f-insights {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0.3in;
+}
+.f-insights li {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  font-size: 13.5pt;
+  font-weight: 500;
+  color: #111;
+  line-height: 1.45;
+  padding: 12px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+.f-insights li:last-child { border-bottom: none; }
+.f-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #8C1515;
+  flex-shrink: 0;
+  margin-top: 6px;
+}
+
+/* CTA */
+.f-cta {
+  font-size: 12pt;
+  color: #333;
+  line-height: 1.65;
+  margin-bottom: 14px;
+}
+.f-cta strong { color: #111; font-weight: 700; }
+
+/* Languages & date note (now live below QR) */
+.f-langs-list {
+  font-size: 8.5pt;
+  color: #777;
+  line-height: 1.7;
+  text-align: center;
+  margin-top: 2px;
+}
+.f-as-of {
+  font-size: 7.5pt;
+  color: #aaa;
+  font-style: italic;
+  text-align: center;
+  margin-top: 4px;
+}
+
+/* QR section */
+.f-qr-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin: 0.18in 0 0.14in;
+}
+
+/* Languages + date footnotes */
+.f-footnotes {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.f-qr-label {
+  font-size: 8.5pt;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: #666;
+}
+#qr-box {
+  width: 1.8in;
+  height: 1.8in;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#qr-box img, #qr-box canvas {
+  width: 1.8in !important;
+  height: 1.8in !important;
+}
+.f-url {
+  font-size: 10pt;
+  font-weight: 600;
+  color: #333;
+  letter-spacing: .005em;
+}
+
+/* Footer */
+.f-footer {
+  background: #f6f6f6;
+  border-top: 3px solid #8C1515;
+  padding: 13px 0.75in;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 8.5pt;
+  color: #555;
+  flex-shrink: 0;
+}
+.f-footer strong { color: #8C1515; }
+
+</style>
+</head>
+<body>
+
+<!-- Preview bar -->
+<div class="preview-bar">
+  <span class="preview-bar-label">Audience:</span>
+  <button class="aud-btn on" onclick="setAud('parent',this)">Parent</button>
+  <button class="aud-btn"    onclick="setAud('educator',this)">Educator</button>
+  <button class="aud-btn"    onclick="setAud('community',this)">Community</button>
+  <button class="print-btn"  onclick="window.print()">Print this version</button>
+</div>
+
+<!-- Flyer -->
+<div class="flyer-shadow">
+<div class="flyer">
+
+  <div class="f-topbar">
+    <span>Community-led &nbsp;·&nbsp; Not district-issued</span>
+  </div>
+
+  <div class="f-body">
+
+    <div class="f-eyebrow" id="f-eyebrow">South Portland School Reconfiguration</div>
+
+    <div class="f-headline" id="f-headline">
+      South Portland parents are sharing what matters most.<br>
+      <em>Is your voice in the mix?</em>
+    </div>
+
+    <div class="f-context">Following a school board vote in March 2026, South Portland is reconfiguring its elementary schools. This community-led survey is gathering perspectives from families and educators to help guide a transition that works for everyone.</div>
+
+    <hr class="f-rule">
+
+    <div class="f-insights-label" id="f-insights-label">What we're hearing so far</div>
+    <ul class="f-insights" id="f-insights">
+      <li><span class="f-dot"></span>Minimizing distance from home</li>
+      <li><span class="f-dot"></span>Ensuring quality educational outcomes for all students</li>
+      <li><span class="f-dot"></span>Keeping neighborhood kids and friend groups together</li>
+    </ul>
+
+    <div class="f-cta" id="f-cta">
+      <strong>Do you agree?</strong> Scan the code below to see the full results and add your voice to the conversation.
+    </div>
+
+    <div class="f-qr-wrap">
+      <div class="f-qr-label">Scan to see results &amp; take the survey</div>
+      <div id="qr-box"></div>
+      <div class="f-url">sopo-data4good-survey.vercel.app</div>
+    </div>
+
+    <div class="f-footnotes">
+      <div class="f-langs-list">English &nbsp;·&nbsp; Español &nbsp;·&nbsp; Português &nbsp;·&nbsp; Français &nbsp;·&nbsp; Kreyòl Ayisyen &nbsp;·&nbsp; Lingala &nbsp;·&nbsp; العربية</div>
+      <div class="f-as-of" id="f-as-of"></div>
+    </div>
+
+  </div>
+
+  <div class="f-footer">
+    <span>Community-led initiative &nbsp;·&nbsp; South Portland, Maine</span>
+    <span>Questions? &nbsp;<strong>SopoParents@gmail.com</strong></span>
+  </div>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<script>
+const URL = "https://sopo-data4good-survey.vercel.app/";
+
+const CONTENT = {
+  parent: {
+    eyebrow: "South Portland School Reconfiguration",
+    headline: `South Portland parents are sharing<br>what matters most.<br><em>Is your voice in the mix?</em>`,
+    insightsLabel: "What parents are saying so far",
+    insights: [
+      "Minimizing distance from home",
+      "Ensuring quality educational outcomes for all students",
+      "Keeping neighborhood kids and friend groups together",
+    ],
+    cta: `<strong>Do you agree?</strong> Scan below to see the full results and add your voice to the conversation.`,
+  },
+  educator: {
+    eyebrow: "South Portland School Reconfiguration",
+    headline: `South Portland educators are sharing<br>what they need to make this work.<br><em>Is your voice in the mix?</em>`,
+    insightsLabel: "What educators are saying so far",
+    insights: [
+      // ⚠ PLACEHOLDER — will be replaced with live data in final version
+      "More time for cross-building team collaboration",
+      "Early clarity on class compositions and building assignments",
+      "Continuity of support for students with IEPs and ESOL needs",
+    ],
+    cta: `<strong>Do you agree?</strong> Scan below to see the full results and add your expertise to the conversation.`,
+  },
+  community: {
+    eyebrow: "South Portland School Reconfiguration",
+    headline: `South Portland is navigating a major change.<br><em>Is your voice in the conversation?</em>`,
+    insightsLabel: "What the community is saying so far",
+    insights: [
+      "Families prioritize keeping kids close to home and with their friend groups",
+      "Educators say they need more preparation time before the transition",
+      "Residents want clear answers about school assignments well before the change",
+    ],
+    cta: `<strong>Do you agree?</strong> Scan below to see the full results and join the conversation — your perspective matters.`,
+  },
+};
+
+// Date note — in the live site this will reflect the last data fetch timestamp
+const dateStr = new Date().toLocaleDateString('en-US', {month:'long', day:'numeric', year:'numeric'});
+document.getElementById("f-as-of").textContent = "Results as of " + dateStr;
+
+// Generate QR code once
+new QRCode(document.getElementById("qr-box"), {
+  text: URL,
+  width: 173, height: 173,   // ~1.8in at 96dpi
+  colorDark: "#000000",
+  colorLight: "#ffffff",
+  correctLevel: QRCode.CorrectLevel.M,
+});
+
+function setAud(key, btn) {
+  const d = CONTENT[key];
+  document.getElementById("f-eyebrow").textContent        = d.eyebrow;
+  document.getElementById("f-headline").innerHTML          = d.headline;
+  document.getElementById("f-insights-label").textContent = d.insightsLabel;
+  document.getElementById("f-insights").innerHTML =
+    d.insights.map(t => `<li><span class="f-dot"></span>${t}</li>`).join("");
+  document.getElementById("f-cta").innerHTML               = d.cta;
+  document.querySelectorAll(".aud-btn").forEach(b => b.classList.remove("on"));
+  if (btn) btn.classList.add("on");
+}
+</script>
+</body>
+</html>

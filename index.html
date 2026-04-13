@@ -410,6 +410,104 @@
       .voice-q { font-size: 0.95rem; }
       .quote-card { font-size: 0.8rem; padding: 11px 13px; }
     }
+
+    /* ─── PRINT FLYER LINK ───────────────────────────────────────────── */
+    .hdr-print-link {
+      background: none; border: none; padding: 0; margin: 0;
+      font-size: 0.72rem; font-weight: 600; letter-spacing: .02em;
+      color: rgba(255,255,255,.65); cursor: pointer;
+      transition: color .15s;
+    }
+    .hdr-print-link:hover { color: white; text-decoration: underline; }
+
+    /* ─── FLYER MODAL ────────────────────────────────────────────────── */
+    .modal-box--flyer { max-width: 540px; }
+    .flyer-modal-controls {
+      display: flex; align-items: center; gap: 7px;
+      padding: 12px 20px; border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .flyer-aud-label {
+      font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .07em; color: var(--text-3); margin-right: 2px; flex-shrink: 0;
+    }
+    .flyer-print-btn {
+      margin-left: auto; padding: 5px 16px; border: none; border-radius: 99px;
+      background: var(--red); color: white; font-size: 0.76rem; font-weight: 700; cursor: pointer;
+    }
+    .flyer-preview-outer {
+      background: #d8d8d8; padding: 14px; overflow-y: auto;
+      max-height: 68vh; display: flex; justify-content: center;
+    }
+    /* scale 8.5in (816px) down to ~424px so it fits the modal */
+    .flyer-zoom { zoom: 0.52; box-shadow: 0 2px 20px rgba(0,0,0,.25); }
+
+    /* ─── FLYER DOCUMENT STYLES (preview + print) ────────────────────── */
+    .flyer-doc {
+      width: 8.5in; min-height: 11in; background: white;
+      box-sizing: border-box; display: flex; flex-direction: column;
+      font-family: system-ui,-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;
+      -webkit-print-color-adjust: exact; print-color-adjust: exact;
+    }
+    .f-topbar {
+      background: #8C1515; color: rgba(255,255,255,.9);
+      padding: 11px 0.7in; font-size: 8.5pt; font-weight: 600;
+      letter-spacing: .07em; text-transform: uppercase;
+    }
+    .f-body { flex: 1; padding: 0.52in 0.75in 0.4in; display: flex; flex-direction: column; }
+    .f-eyebrow {
+      font-size: 8.5pt; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .1em; color: #8C1515; margin-bottom: 10px;
+    }
+    .f-headline {
+      font-size: 27pt; font-weight: 800; line-height: 1.18;
+      color: #111; margin: 0 0 0.2in; letter-spacing: -.02em;
+    }
+    .f-headline em { color: #8C1515; font-style: normal; }
+    .f-context { font-size: 10.5pt; color: #555; line-height: 1.6; margin-bottom: 0.22in; }
+    .f-rule { border: none; border-top: 2px solid #eee; margin: 0 0 16px; }
+    .f-insights-label {
+      font-size: 8pt; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .1em; color: #8C1515; margin-bottom: 12px;
+    }
+    .f-insights { list-style: none; padding: 0; margin: 0 0 0.28in; }
+    .f-insights li {
+      display: flex; align-items: flex-start; gap: 14px;
+      font-size: 13.5pt; font-weight: 500; color: #111; line-height: 1.45;
+      padding: 11px 0; border-bottom: 1px solid #f0f0f0;
+    }
+    .f-insights li:last-child { border-bottom: none; }
+    .f-dot { width: 9px; height: 9px; border-radius: 50%; background: #8C1515; flex-shrink: 0; margin-top: 6px; }
+    .f-cta { font-size: 12pt; color: #333; line-height: 1.65; margin-bottom: 0; }
+    .f-cta strong { color: #111; font-weight: 700; }
+    .f-qr-wrap {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 6px; margin: 0.18in 0 0.12in;
+    }
+    .f-qr-label {
+      font-size: 8.5pt; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .08em; color: #666;
+    }
+    .f-qr-box { width: 1.8in; height: 1.8in; }
+    .f-qr-box img, .f-qr-box canvas { width: 1.8in !important; height: 1.8in !important; }
+    .f-url { font-size: 10pt; font-weight: 600; color: #333; letter-spacing: .005em; }
+    .f-footnotes { margin-top: auto; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .f-langs-list { font-size: 8.5pt; color: #777; line-height: 1.7; text-align: center; }
+    .f-as-of { font-size: 7.5pt; color: #aaa; font-style: italic; text-align: center; }
+    .f-footer {
+      background: #f6f6f6; border-top: 3px solid #8C1515;
+      padding: 13px 0.75in; display: flex; justify-content: space-between;
+      align-items: center; font-size: 8.5pt; color: #555; flex-shrink: 0;
+    }
+    .f-footer strong { color: #8C1515; }
+
+    /* ─── PRINT ──────────────────────────────────────────────────────── */
+    @media print {
+      body > *:not(#flyer-print-root) { display: none !important; }
+      #flyer-print-root { display: block !important; }
+      .flyer-doc { zoom: 1 !important; box-shadow: none !important; }
+      @page { size: letter portrait; margin: 0; }
+    }
   </style>
 </head>
 <body>
@@ -423,7 +521,7 @@
       <div class="hdr-eyebrow">Community-Led · South Portland Public Schools</div>
       <h1>Community Impact Survey</h1>
       <p class="hdr-sub">Live insights from the community the district needs to know for school reconfiguration.</p>
-      <p class="hdr-meta"><span id="survey-status-pill"></span><strong id="total-n">—</strong> responses</p>
+      <p class="hdr-meta"><span id="survey-status-pill"></span><strong id="total-n">—</strong> responses &nbsp;·&nbsp; <button class="hdr-print-link" onclick="openModal('flyer-modal')">Print a flyer →</button></p>
     </div>
     <!-- Desktop action buttons -->
     <div class="hdr-actions">
@@ -435,6 +533,7 @@
       <button class="hdr-btn hdr-btn-ghost" id="hamburger-btn" onclick="toggleMobileMenu()">&#9776;</button>
       <div class="hdr-mobile-menu" id="mobile-menu" hidden>
         <button class="hdr-btn hdr-btn-ghost" onclick="openModal('about-modal');hideMobileMenu()">About</button>
+        <button class="hdr-btn hdr-btn-ghost" onclick="openModal('flyer-modal');hideMobileMenu()">Print a Flyer</button>
         <button class="hdr-btn hdr-btn-solid take-survey-btn" onclick="openModal('survey-modal');hideMobileMenu()">Take the Survey</button>
       </div>
     </div>
@@ -575,6 +674,33 @@
       </div>
     </div>
   </div>
+</div>
+
+<!-- ── PRINT FLYER MODAL ──────────────────────────────────────────────────── -->
+<div class="modal-overlay" id="flyer-modal" hidden onclick="handleOverlayClick(event,'flyer-modal')">
+  <div class="modal-box modal-box--flyer">
+    <div class="modal-head">
+      <div class="modal-title">Print a Flyer</div>
+      <button class="modal-close" onclick="closeModal('flyer-modal')">&#x2715;</button>
+    </div>
+    <div class="flyer-modal-controls">
+      <span class="flyer-aud-label">Audience:</span>
+      <button class="pill on" id="faud-parent"    onclick="setFlyerAud('parent')">Parent</button>
+      <button class="pill"    id="faud-educator"  onclick="setFlyerAud('educator')">Educator</button>
+      <button class="pill"    id="faud-community" onclick="setFlyerAud('community')">Community</button>
+      <button class="flyer-print-btn" onclick="doPrint()">Print</button>
+    </div>
+    <div class="flyer-preview-outer">
+      <div class="flyer-zoom">
+        <div class="flyer-doc" id="flyer-preview-doc"><!-- filled by JS --></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Print target: hidden on screen, only element shown when printing -->
+<div id="flyer-print-root" style="display:none" aria-hidden="true">
+  <div class="flyer-doc" id="flyer-print-doc"><!-- filled by JS --></div>
 </div>
 
 <script>
@@ -1604,6 +1730,7 @@ async function init(){
     document.getElementById("total-n").textContent=rows.length||"—";
     buildLangPills(rows);
     refreshAll();
+    updateFlyerInsights(rows, Date.now());
     document.getElementById("status-bar").style.display="none";
   } catch(err){
     console.error(err);
@@ -1619,6 +1746,7 @@ if (!USE_LOCAL){
       document.getElementById("total-n").textContent=rows.length||"—";
       buildLangPills(rows);
       refreshAll();
+      updateFlyerInsights(rows, Date.now());
     } catch(e){ console.warn("Refresh failed",e); }
   }, REFRESH_MS);
 }
@@ -1630,6 +1758,7 @@ function openModal(id){
   document.getElementById(id).hidden = false;
   document.body.style.overflow = "hidden";
   hideMobileMenu();
+  if (id === "flyer-modal") renderFlyerPreview();
 }
 function closeModal(id){
   document.getElementById(id).hidden = true;
@@ -1647,13 +1776,136 @@ function hideMobileMenu(){
   if (m) m.hidden = true;
 }
 document.addEventListener("keydown", e => {
-  if (e.key === "Escape") ["about-modal","survey-modal"].forEach(closeModal);
+  if (e.key === "Escape") ["about-modal","survey-modal","flyer-modal"].forEach(closeModal);
 });
+
+// ─── PRINT FLYER ─────────────────────────────────────────────────────────────
+const FLYER_URL = "https://sopo-data4good-survey.vercel.app/";
+let _flyerAud = "parent";
+let _flyerQRDone = false;
+
+const FLYER_CONTENT = {
+  parent: {
+    headline: `South Portland parents are sharing<br>what matters most.<br><em>Is your voice in the mix?</em>`,
+    insightsLabel: "What parents are saying so far",
+    // Top 3 computed live from _rows after data loads; fallback below
+    insights: ["Minimizing distance from home","Ensuring quality educational outcomes for all students","Keeping neighborhood kids and friend groups together"],
+    cta: `<strong>Do you agree?</strong> Scan the code below to see the full results and add your voice to the conversation.`,
+  },
+  educator: {
+    headline: `South Portland educators are sharing<br>what they need to make this work.<br><em>Is your voice in the mix?</em>`,
+    insightsLabel: "What educators are saying so far",
+    insights: ["More time for cross-building team collaboration","Early clarity on class compositions and building assignments","Continuity of support for students with IEPs and ESOL needs"],
+    cta: `<strong>Do you agree?</strong> Scan the code below to see the full results and add your expertise to the conversation.`,
+  },
+  community: {
+    headline: `South Portland is navigating a major change.<br><em>Is your voice in the conversation?</em>`,
+    insightsLabel: "What the community is saying so far",
+    insights: ["Families prioritize keeping kids close to home and with their friend groups","Educators say they need more preparation time before the transition","Residents want clear answers about school assignments well before the change"],
+    cta: `<strong>Do you agree?</strong> Scan the code below to see the full results and join the conversation — your perspective matters.`,
+  },
+};
+
+function flyerHTML(aud, asOf) {
+  const d = FLYER_CONTENT[aud];
+  const bullets = d.insights.map(t=>`<li><span class="f-dot"></span>${t}</li>`).join("");
+  return `
+    <div class="f-topbar">Community-led &nbsp;·&nbsp; Not district-issued</div>
+    <div class="f-body">
+      <div class="f-eyebrow">South Portland School Reconfiguration</div>
+      <div class="f-headline">${d.headline}</div>
+      <div class="f-context">Following a school board vote in March 2026, South Portland is reconfiguring its elementary schools. This community-led survey is gathering perspectives from families and educators to help guide a transition that works for everyone.</div>
+      <hr class="f-rule">
+      <div class="f-insights-label">${d.insightsLabel}</div>
+      <ul class="f-insights">${bullets}</ul>
+      <div class="f-cta">${d.cta}</div>
+      <div class="f-qr-wrap">
+        <div class="f-qr-label">Scan to see results &amp; take the survey</div>
+        <div class="f-qr-box" id="${aud==="parent"?"f-qr-p":aud==="educator"?"f-qr-e":"f-qr-c"}"></div>
+        <div class="f-url">sopo-data4good-survey.vercel.app</div>
+      </div>
+      <div class="f-footnotes">
+        <div class="f-langs-list">English &nbsp;·&nbsp; Español &nbsp;·&nbsp; Português &nbsp;·&nbsp; Français &nbsp;·&nbsp; Kreyòl Ayisyen &nbsp;·&nbsp; Lingala &nbsp;·&nbsp; العربية</div>
+        <div class="f-as-of">${asOf}</div>
+      </div>
+    </div>
+    <div class="f-footer">
+      <span>Community-led initiative &nbsp;·&nbsp; South Portland, Maine</span>
+      <span>Questions? &nbsp;<strong>SopoParents@gmail.com</strong></span>
+    </div>`;
+}
+
+function setFlyerAud(aud) {
+  _flyerAud = aud;
+  ["parent","educator","community"].forEach(a => {
+    document.getElementById("faud-"+a).classList.toggle("on", a===aud);
+  });
+  renderFlyerPreview();
+}
+
+function renderFlyerPreview() {
+  const asOf = _flyerLastFetch
+    ? "Results as of " + new Date(_flyerLastFetch).toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"})
+    : "";
+  const html = flyerHTML(_flyerAud, asOf);
+  document.getElementById("flyer-preview-doc").innerHTML = html;
+  // QR code in preview
+  const qrId = _flyerAud==="parent"?"f-qr-p":_flyerAud==="educator"?"f-qr-e":"f-qr-c";
+  const box = document.getElementById(qrId);
+  if (box && !box.dataset.qrdone && typeof QRCode !== "undefined") {
+    new QRCode(box, {text:FLYER_URL, width:173, height:173, colorDark:"#000", colorLight:"#fff", correctLevel:QRCode.CorrectLevel.M});
+    box.dataset.qrdone = "1";
+  }
+}
+
+function doPrint() {
+  const asOf = _flyerLastFetch
+    ? "Results as of " + new Date(_flyerLastFetch).toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"})
+    : "";
+  const printDoc = document.getElementById("flyer-print-doc");
+  printDoc.innerHTML = flyerHTML(_flyerAud, asOf).replace(
+    // give the print QR div a unique id so it doesn't clash with preview
+    /id="(f-qr-[pec])"/g, 'id="print-$1"'
+  );
+  const qrId = _flyerAud==="parent"?"print-f-qr-p":_flyerAud==="educator"?"print-f-qr-e":"print-f-qr-c";
+  const box = document.getElementById(qrId);
+  if (box && typeof QRCode !== "undefined") {
+    new QRCode(box, {text:FLYER_URL, width:173, height:173, colorDark:"#000", colorLight:"#fff", correctLevel:QRCode.CorrectLevel.M});
+  }
+  // Small delay so QR renders before print dialog opens
+  setTimeout(()=>window.print(), 250);
+}
+
+// Compute live parent insights from What Matters Most after data loads
+let _flyerLastFetch = null;
+function updateFlyerInsights(rows, fetchTime) {
+  _flyerLastFetch = fetchTime;
+  const pRows = parents(rows);
+  if (!pRows.length) return;
+  const cols = [...new Set(fcolsAll("factors matter most to your family in how your child").filter(Boolean))];
+  if (!cols.length) return;
+  const cnts = countV(pRows, cols, "multi");
+  const ks = new Set(_knownOpts);
+  const top3 = desc(cnts).filter(([lbl])=>!ks.size||ks.has(lbl)).slice(0,3).map(([lbl])=>lbl);
+  if (top3.length===3) FLYER_CONTENT.parent.insights = top3;
+
+  // Educator insights
+  const eRows = educators(rows);
+  if (eRows.length) {
+    const eCols = [...new Set(fcolsAll("supports are most critical to your ability to serve students").filter(Boolean))];
+    if (eCols.length) {
+      const eCnts = countV(eRows, eCols, "multi");
+      const eTop3 = desc(eCnts).filter(([lbl])=>!ks.size||ks.has(lbl)).slice(0,3).map(([lbl])=>lbl);
+      if (eTop3.length===3) FLYER_CONTENT.educator.insights = eTop3;
+    }
+  }
+}
 document.addEventListener("click", e => {
   const btn  = document.getElementById("hamburger-btn");
   const menu = document.getElementById("mobile-menu");
   if (menu && !menu.hidden && !menu.contains(e.target) && e.target !== btn) hideMobileMenu();
 });
 </script>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 </body>
 </html>
