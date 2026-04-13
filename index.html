@@ -416,9 +416,24 @@
       background: none; border: none; padding: 0; margin: 0;
       font-size: 0.72rem; font-weight: 600; letter-spacing: .02em;
       color: var(--red); cursor: pointer;
-      transition: color .15s;
+      position: relative;
+      text-decoration: none;
+      background-image: linear-gradient(var(--red), var(--red));
+      background-size: 0% 1.5px;
+      background-repeat: no-repeat;
+      background-position: left bottom;
+      transition: background-size .3s ease, color .15s;
+      animation: flyer-nudge 4s ease-in-out 2s infinite;
     }
-    .hdr-print-link:hover { color: var(--red-mid); text-decoration: underline; }
+    .hdr-print-link:hover {
+      background-size: 100% 1.5px;
+      animation: none;
+    }
+    @keyframes flyer-nudge {
+      0%, 80%, 100% { opacity: 1; }
+      88%           { opacity: .45; }
+      96%           { opacity: 1; }
+    }
 
     /* ─── FLYER MODAL ────────────────────────────────────────────────── */
     .modal-box--flyer { max-width: 540px; }
@@ -521,7 +536,7 @@
       <div class="hdr-eyebrow">Community-Led · South Portland Public Schools</div>
       <h1>Community Impact Survey</h1>
       <p class="hdr-sub">Live insights from the community the district needs to know for school reconfiguration.</p>
-      <p class="hdr-meta"><span id="survey-status-pill"></span><strong id="total-n">—</strong> responses &nbsp;·&nbsp; <button class="hdr-print-link" onclick="openModal('flyer-modal')">Print a flyer →</button></p>
+      <p class="hdr-meta"><span id="survey-status-pill"></span><strong id="total-n">—</strong> responses &nbsp;·&nbsp; <button class="hdr-print-link" onclick="openModal('flyer-modal')">Print a flyer</button></p>
     </div>
     <!-- Desktop action buttons -->
     <div class="hdr-actions">
